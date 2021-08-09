@@ -1,7 +1,4 @@
-// Init
-const router = require("express").Router();
 const multer = require("multer");
-const { postAll } = require("../controllers/domain");
 
 // Multer Declaration
 const storage = multer.diskStorage({
@@ -12,11 +9,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
+// Domain Multer declaration
+const domainFile = multer({ storage });
 
-const upload = multer({ storage });
-
-// Routes
-router.post("/all", upload.single("domains"), postAll);
-
-// Export
-module.exports = router;
+module.exports = { domainFile };
