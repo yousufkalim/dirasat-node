@@ -10,6 +10,6 @@ const storage = multer.diskStorage({
   },
 });
 // Domain Multer declaration
-const domainFile = multer({ storage });
+const upload = multer({ storage });
 
-module.exports = { domainFile };
+module.exports = { upload };
