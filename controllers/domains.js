@@ -9,7 +9,7 @@ exports.getAll = async (req, res) => {
 
     res.status(200).send({ msg: "Ok", domains });
   } catch (error) {
-    res.status(500).send({ msg: "Something Failed" });
+    res.status(500).send("Something Failed");
   }
 };
 
@@ -37,6 +37,6 @@ exports.postAll = async (req, res) => {
 
     res.status(200).send({ msg: "Ok" });
   } catch (error) {
-    res.status(500).send({ msg: "Something Failed" });
+    res.status(500).send("Something Failed");
   }
 };

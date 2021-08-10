@@ -5,19 +5,17 @@ const fs = require("fs");
 // Get all Questions
 exports.getAll = async (req, res) => {
   try {
-    const questions = await Questions.find(); //Find all domains in DB
+    const questions = await Questions.find(); //Find all questions in DB
 
     res.status(200).send({ msg: "Ok", questions });
   } catch (error) {
-    res.status(500).send({ msg: "Something Failed" });
+    res.status(500).send("Something Failed");
   }
 };
 
 // Post all Questions
 exports.postAll = async (req, res) => {
   try {
-    await Questions.deleteMany();
-
     const data = [];
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
@@ -42,6 +40,6 @@ exports.postAll = async (req, res) => {
       questions,
     });
   } catch (error) {
-    res.status(500).send({ msg: "Something Failed" });
+    res.status(500).send("Something Failed");
   }
 };
