@@ -21,9 +21,8 @@ exports.postAll = async (req, res) => {
     await xlsxFile(req.file.path).then(async (rows) => {
       rows.forEach((item) => {
         data.push({
-          last_answer: item[0],
-          type_of_job: item[1],
-          example_of_job: item[2],
+          type_of_job: item[0],
+          example_of_job: item[1],
         });
       });
     });
