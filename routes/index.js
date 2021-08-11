@@ -6,6 +6,7 @@ router.use("/example", require("./example"));
 router.use("/domains", require("./domains"));
 router.use("/questions", require("./questions"));
 router.use("/answers", require("./answers"));
+router.use("/courses", require("./courses"));
 router.use("/jobs", require("./jobs"));
 
 // Export
