@@ -19,6 +19,10 @@ const answerSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Domain",
     },
+    job: {
+      type: Schema.Types.ObjectId,
+      ref: "Job",
+    },
   },
   { timestamps: true }
 );
