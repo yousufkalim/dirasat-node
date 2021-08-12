@@ -1,4 +1,4 @@
-const User = require("../models/users");
+const Users = require("../models/users");
 const Questions = require("../models/questions");
 const Answers = require("../models/answers");
 
@@ -14,24 +14,41 @@ exports.createUser = async (req, res) => {
       phone,
       contact_me,
       newsletter,
+      school,
+      address,
     } = req.body;
 
-    // const user = new User({
-    //   first_name,
-    //   last_name,
-    //   date_of_birth,
-    //   education_level,
-    //   phone,
-    //   contact_me,
-    //   newsletter,
-    // });
-    // await user.save();
-
+    const emailInDb = await Users.findOne({ email });
     const questions = await Questions.find();
     const answers = await Answers.find();
 
-    res.status(200).send({ msg: "Ok", questions, answers });
+    if (emailInDb) {
+      return res
+        .status(200)
+        .send({ msg: "Ok", questions, answers, user: emailInDb._id });
+    } else {
+      const user = new Users({
+        email,
+        first_name,
+        last_name,
+        education_level,
+        phone,
+        contact_me,
+        newsletter,
+        school,
+        address,
+        date_of_birth: new Date(date_of_birth),
+      });
+
+      console.log("user", user);
+      const savedUser = await user.save();
+
+      return res
+        .status(200)
+        .send({ msg: "Ok", questions, answers, user: savedUser._id });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).send("Something Failed");
   }
 };

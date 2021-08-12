@@ -34,8 +34,33 @@ const userSchema = new Schema(
       type: Boolean,
       defauult: false,
     },
-    // address: {},
-    // school: {}
+    school: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "School",
+    },
+    address: {
+      lat: {
+        type: String,
+        required: true,
+      },
+      lng: {
+        type: String,
+        required: true,
+      },
+      label: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      postal_code: {
+        type: String,
+        required: true,
+      },
+    },
     // result: [{}],
   },
   { timestamps: true }
