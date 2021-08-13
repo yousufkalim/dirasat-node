@@ -25,7 +25,7 @@ exports.createUser = async (req, res) => {
     if (emailInDb) {
       return res
         .status(200)
-        .send({ msg: "Ok", questions, answers, user: emailInDb._id });
+        .send({ msg: "Ok", questions, answers, user: emailInDb });
     } else {
       const user = new Users({
         email,
@@ -40,12 +40,11 @@ exports.createUser = async (req, res) => {
         date_of_birth: new Date(date_of_birth),
       });
 
-      console.log("user", user);
       const savedUser = await user.save();
 
       return res
         .status(200)
-        .send({ msg: "Ok", questions, answers, user: savedUser._id });
+        .send({ msg: "Ok", questions, answers, user: savedUser });
     }
   } catch (error) {
     console.log(error);
