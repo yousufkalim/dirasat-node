@@ -1,6 +1,7 @@
 const Results = require("../models/results");
 const Users = require("../models/users");
 const Answers = require("../models/answers");
+const Domains = require("../models/domains");
 const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
 const percentageAlgorithm = require("../utils/percentageAlgorithm");
@@ -16,6 +17,7 @@ exports.create = async (req, res) => {
     if (!user) return res.status(4004).send("User Not Found");
 
     const answer = await Answers.findById(last_answer).populate("job"); //Finding answer for Job and Domain Id's
+    const domain = await Domains.findById(answer.domain); //Finding Domain name for result
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers },
     }); //Finding all discriminatory Answers In Db
@@ -87,7 +89,7 @@ exports.create = async (req, res) => {
       user: user_id,
       last_answer,
       example_of_job: answer.job.example_of_job,
-      domain: answer.domain,
+      domain: domain.name,
       desc_answers: disc_answers,
       courses,
     });
@@ -106,7 +108,7 @@ exports.create = async (req, res) => {
     );
 
     const resultForResponse = await Results.findById(savedResult._id)
-      .populate("courses.courseId ")
+      .populate("courses.courseId")
       .populate({
         path: "courses.courseId",
         populate: { path: "domain" },
