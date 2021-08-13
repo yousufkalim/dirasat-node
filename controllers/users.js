@@ -20,7 +20,7 @@ exports.createUser = async (req, res) => {
 
     const emailInDb = await Users.findOne({ email });
     const questions = await Questions.find();
-    const answers = await Answers.find();
+    const answers = await Answers.find().populate("question");
 
     if (emailInDb) {
       return res

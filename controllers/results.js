@@ -3,6 +3,8 @@ const Users = require("../models/users");
 const Answers = require("../models/answers");
 const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
+const percentageAlgorithm = require("../utils/percentageAlgorithm");
+const Algorithm = require("../utils/percentageAlgorithm");
 
 // Create a Result
 exports.create = async (req, res) => {
@@ -26,6 +28,14 @@ exports.create = async (req, res) => {
         desc_answers_in_db[5].answer === "Français" ? "French" : "English",
     });
 
+    // Getting the First letters of disc answers for algorithm
+    const first_disc_ans = desc_answers_in_db[0].answer.substring(0, 1);
+    const second_disc_ans = desc_answers_in_db[1].answer.substring(0, 1);
+    const third_disc_ans = desc_answers_in_db[2].answer.substring(0, 1);
+    const algo_object = Algorithm(
+      `${first_disc_ans}${second_disc_ans}${third_disc_ans}`
+    );
+
     //Filtering Courses if user selects Close
     if (desc_answers_in_db[3].answer === "Près") {
       courses = courses.map((item) => {
@@ -45,18 +55,30 @@ exports.create = async (req, res) => {
         .map((type) => {
           const filtered = courses.filter((c) => c.type_of_course === type);
           filtered.sort((a, b) => a.distance - b.distance);
+          filtered[0] != null && (filtered[0].percentage = algo_object[type]);
           return filtered[0];
         })
         .filter((c) => c != null)
         .map((item) => ({
           courseId: item._id,
-          percentage: "10",
+          percentage: item.percentage,
         }));
     } else {
+      // Filtering courses with algorithm and embedding percentage in them
+      const filteredCourses = [];
+      course_types.forEach((type) => {
+        const filtered = courses.filter((c) => c.type_of_course === type);
+        filtered.forEach((item) => {
+          filteredCourses.push({
+            ...item._doc,
+            percentage: algo_object[type],
+          });
+        });
+      });
       // Mapping courseId and percentage for result
-      courses = courses.map((item) => ({
+      courses = filteredCourses.map((item) => ({
         courseId: item._id,
-        percentage: "10",
+        percentage: item.percentage,
       }));
     }
 
@@ -83,16 +105,18 @@ exports.create = async (req, res) => {
       { new: true }
     );
 
-    const resultForResponse = await Results.findById(savedResult._id).populate(
-      "courses.courseId"
-    ); // Fetching results from DB for Response
+    const resultForResponse = await Results.findById(savedResult._id)
+      .populate("courses.courseId ")
+      .populate({
+        path: "courses.courseId",
+        populate: { path: "domain" },
+      }); // Fetching results from DB for Response
 
     res.status(200).send({
       msg: "Ok",
       result: resultForResponse,
     });
   } catch (error) {
-    console.log("Error", error);
     res.status(500).send("Something Failed");
   }
 };
