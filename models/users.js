@@ -61,7 +61,13 @@ const userSchema = new Schema(
         required: true,
       },
     },
-    // result: [{}],
+    results: [
+      {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Result",
+      },
+    ],
   },
   { timestamps: true }
 );

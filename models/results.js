@@ -1,5 +1,17 @@
 const { Schema, model } = require("mongoose");
 
+const courseSchema = new Schema({
+  courseId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Course",
+  },
+  percentage: {
+    type: String,
+    required: true,
+  },
+});
+
 const resultSchema = new Schema(
   {
     user: {
@@ -26,13 +38,7 @@ const resultSchema = new Schema(
         ref: "Answer",
       },
     ],
-    courses: [
-      {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "Course",
-      },
-    ],
+    courses: [courseSchema],
   },
   { timestamps: true }
 );
