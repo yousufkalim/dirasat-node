@@ -9,11 +9,6 @@ const jobsScehma = new Schema({
     type: String,
     required: true,
   },
-  last_answer: {
-    type: Schema.Types.ObjectId,
-    ref: "Answer",
-    required: true,
-  },
 });
 
 module.exports = model("Job", jobsScehma);

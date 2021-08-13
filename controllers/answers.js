@@ -16,8 +16,6 @@ exports.getAll = async (req, res) => {
 // Post All answers
 exports.postAll = async (req, res) => {
   try {
-    // await Answers.deleteMany(); // deleting all answers data in database
-
     const data = [];
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
@@ -27,13 +25,14 @@ exports.postAll = async (req, res) => {
           question: item[1],
           next_question: item[2] === "null" ? null : item[2],
           domain: item[3] === "null" ? null : item[3],
+          job: item[4] === "null" ? null : item[4],
         });
       });
     });
 
-    const answers = await Answers.insertMany(data); // inserting all data in database
+    await Answers.insertMany(data); // inserting all data in database
 
-    // // deleting Excel File after saving data to database
+    // deleting Excel File after saving data to database
     fs.unlinkSync(req.file.path, (err) => {
       console.log(err);
     });
