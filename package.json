@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "deploy": "git pull origin main && npm install && pm2 restart 10"
   },
   "repository": {
     "type": "git",
