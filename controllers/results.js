@@ -4,7 +4,6 @@ const Answers = require("../models/answers");
 const Domains = require("../models/domains");
 const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
-const percentageAlgorithm = require("../utils/percentageAlgorithm");
 const Algorithm = require("../utils/percentageAlgorithm");
 
 // Create a Result
@@ -14,7 +13,7 @@ exports.create = async (req, res) => {
     const course_types = ["BTS", "BUT", "CPGE", "Ecole Post-Bac", "Licence"];
 
     const user = await Users.findById(user_id); //Finding User in DB
-    if (!user) return res.status(4004).send("User Not Found");
+    if (!user) return res.status(404).send("User Not Found");
 
     const answer = await Answers.findById(last_answer).populate("job"); //Finding answer for Job and Domain Id's
     const domain = await Domains.findById(answer.domain); //Finding Domain name for result

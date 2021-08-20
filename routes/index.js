@@ -11,8 +11,7 @@ router.use("/results", require("./results"));
 router.use("/schools", require("./schools"));
 router.use("/users", require("./users"));
 router.use("/jobs", require("./jobs"));
-router.use("/auth", require("./auth"));
-router.use("/admins", require("./admins"));
+router.use("/admin", require("./admin"));
 
 // Export
 module.exports = router;

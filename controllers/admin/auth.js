@@ -32,15 +32,6 @@ exports.logout = (req, res) => {
 };
 
 exports.confirmAuth = (req, res) => {
-  if (req.isAuthenticated()) {
-    // If user authenticated
-    res.set(
-      "cache-control",
-      "no-cache, no-store, private, must-revalidate, post-check=0, pre-check=0"
-    );
-    res.status(200).send({ msg: "User Authenticated", user: req.user });
-  } else {
-    // If not
-    res.status(403).send("Your session is expired");
-  }
+  // If user authenticated
+  res.status(200).send({ msg: "User Authenticated", user: req.user });
 };
