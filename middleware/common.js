@@ -9,7 +9,7 @@ require("./passport")(passport);
 
 // Common Middleware
 module.exports = (app) => {
-  app.use(cors());
+  app.use(cors({ credentials: true, origin: true }));
   app.use(logger("dev"));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());

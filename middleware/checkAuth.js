@@ -9,6 +9,6 @@ exports.checkAuth = (req, res, next) => {
 		next();
 	} else {
 		// If not
-		res.status(401).send("Your session is expired");
+		res.status(403).send("Your session is expired");
 	}
 };
