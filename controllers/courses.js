@@ -11,6 +11,7 @@ exports.getAll = async (req, res) => {
 
     res.status(200).send({ msg: "Ok", courses });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -54,7 +55,7 @@ exports.postAll = async (req, res) => {
 
     res.status(200).send({ msg: "Ok" });
   } catch (error) {
-    console.log(error);
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

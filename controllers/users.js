@@ -47,7 +47,7 @@ exports.createUser = async (req, res) => {
         .send({ msg: "Ok", questions, answers, user: savedUser });
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

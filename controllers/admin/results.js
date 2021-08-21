@@ -16,6 +16,7 @@ exports.getResults = async (req, res) => {
 
     res.status(200).send({ msg: "All Results", results, totalResults });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -29,6 +30,7 @@ exports.getOneResult = async (req, res) => {
 
     res.status(200).send({ msg: "Result Fetched", result });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -68,6 +70,7 @@ exports.deleteResult = async (req, res) => {
 
     res.status(200).send("Result Deleted");
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

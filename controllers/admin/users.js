@@ -15,6 +15,7 @@ exports.getAllUsers = async (req, res) => {
 
     res.status(200).send({ msg: "All Users", users, totalUsers });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -28,6 +29,7 @@ exports.getOneUser = async (req, res) => {
 
     res.status(200).send({ msg: "User Fetched", user });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -41,6 +43,7 @@ exports.deleteUser = async (req, res) => {
 
     res.status(200).send("User Deleted");
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

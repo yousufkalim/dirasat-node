@@ -110,6 +110,7 @@ exports.create = async (req, res) => {
       .populate("courses.courseId")
       .populate({
         path: "courses.courseId",
+        // this is for nested population . courseId has a property domain which is being populated
         populate: { path: "domain" },
       }); // Fetching results from DB for Response
 
@@ -118,6 +119,7 @@ exports.create = async (req, res) => {
       result: resultForResponse,
     });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
