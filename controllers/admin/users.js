@@ -11,7 +11,9 @@ exports.getAllUsers = async (req, res) => {
       .skip((pageNumber - 1) * pageSize)
       .limit(parseInt(pageSize));
 
-    res.status(200).send({ msg: "All Users", users });
+    const totalUsers = await Users.find().countDocuments();
+
+    res.status(200).send({ msg: "All Users", users, totalUsers });
   } catch (error) {
     res.status(500).send("Something Failed");
   }
