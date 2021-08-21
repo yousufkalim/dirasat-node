@@ -21,6 +21,25 @@ exports.validateExample = [
   check("number", "Number is required.").notEmpty().trim(),
 ];
 
+// User Creation Validation
+exports.validateUser = [
+  check("email", "Email is required.").notEmpty().isEmail().trim(),
+  check("first_name", "First Name is required.").notEmpty().trim(),
+  check("last_name", "Last Name is required.").notEmpty().trim(),
+  check("education_level", "Education Level is required.").notEmpty().trim(),
+  check("phone", "Phone is required.").notEmpty().trim(),
+  check("contact_me", "Contact Me is required.").isBoolean(),
+  check("newsletter", "Newsletter is required.").isBoolean(),
+  check("school", "School is required.").notEmpty().trim(),
+  check("address", "Address is required.").notEmpty(),
+  check("address.lat", "Latitude is required.").notEmpty(),
+  check("address.lng", "Longitude is required.").notEmpty(),
+  check("address.city", "City is required.").notEmpty(),
+  check("address.postal_code", "Postal Code is required.").notEmpty(),
+  check("address.label", "Address Label is required.").notEmpty(),
+  check("date_of_birth", "Date Of Birth is required.").notEmpty().trim(),
+];
+
 /*
 ======================
 Result
