@@ -9,6 +9,7 @@ exports.getAll = async (req, res) => {
 
     res.status(200).send({ msg: "Ok", questions });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -40,6 +41,7 @@ exports.postAll = async (req, res) => {
       questions,
     });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

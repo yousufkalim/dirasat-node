@@ -6,14 +6,17 @@ exports.getResults = async (req, res) => {
   try {
     const { pageNumber, pageSize } = req.query;
 
-    //Fetching results from database in descending order accordi  ng to date
+    //Fetching results from database in descending order according to date
     const results = await Results.find()
       .sort("-createdAt")
       .skip((pageNumber - 1) * pageSize)
       .limit(parseInt(pageSize));
 
-    res.status(200).send({ msg: "All Results", results });
+    const totalResults = await Results.find().countDocuments();
+
+    res.status(200).send({ msg: "All Results", results, totalResults });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -27,6 +30,7 @@ exports.getOneResult = async (req, res) => {
 
     res.status(200).send({ msg: "Result Fetched", result });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
@@ -36,6 +40,7 @@ exports.getUserResult = async (req, res) => {
   try {
     //Fetching User Results From DB
     const results = await Results.find({ user: req.params._id });
+    if (!result) return res.status(404).send("User Result not Found");
 
     res.status(200).send({ msg: "Results Fetched", result: results });
   } catch (error) {
@@ -65,6 +70,7 @@ exports.deleteResult = async (req, res) => {
 
     res.status(200).send("Result Deleted");
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };

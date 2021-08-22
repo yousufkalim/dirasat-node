@@ -22,6 +22,7 @@ exports.create = async (req, res) => {
 
     res.status(200).send({ msg: "User Created", user: admin });
   } catch (error) {
+    console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
