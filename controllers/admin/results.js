@@ -40,7 +40,6 @@ exports.getUserResult = async (req, res) => {
   try {
     //Fetching User Results From DB
     const results = await Results.find({ user: req.params._id });
-    if (!result) return res.status(404).send("User Result not Found");
 
     res.status(200).send({ msg: "Results Fetched", result: results });
   } catch (error) {
