@@ -8,7 +8,7 @@ exports.getAllUsers = async (req, res) => {
     //Fetching Users from database in descending order according to date
     const users = await Users.find()
       .sort("-createdAt")
-      .skip((pageNumber - 1) * pageSize)
+      .skip(pageNumber * pageSize)
       .limit(parseInt(pageSize));
 
     const totalUsers = await Users.find().countDocuments();
