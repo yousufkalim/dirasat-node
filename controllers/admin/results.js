@@ -8,8 +8,9 @@ exports.getResults = async (req, res) => {
 
     //Fetching results from database in descending order according to date
     const results = await Results.find()
+      .populate("user")
       .sort("-createdAt")
-      .skip((pageNumber - 1) * pageSize)
+      .skip(pageNumber * pageSize)
       .limit(parseInt(pageSize));
 
     const totalResults = await Results.find().countDocuments();
