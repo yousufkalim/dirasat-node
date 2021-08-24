@@ -26,7 +26,9 @@ exports.getResults = async (req, res) => {
 exports.getOneResult = async (req, res) => {
   try {
     //Fetching Result From DB
-    const result = await Results.findById(req.params._id);
+    const result = await Results.findById(req.params._id).populate(
+      "courses.courseId"
+    );
     if (!result) return res.status(404).send("Result not Found");
 
     res.status(200).send({ msg: "Result Fetched", result });
@@ -40,7 +42,9 @@ exports.getOneResult = async (req, res) => {
 exports.getUserResult = async (req, res) => {
   try {
     //Fetching User Results From DB
-    const results = await Results.find({ user: req.params._id });
+    const results = await Results.find({ user: req.params._id }).populate(
+      "user"
+    );
     if (!results) return res.status(404).send("User Result not Found");
 
     res.status(200).send({ msg: "Results Fetched", result: results });
