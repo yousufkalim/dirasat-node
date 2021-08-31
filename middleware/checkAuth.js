@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 // Check auth
 exports.checkAuth = (req, res, next) => {
   // Get token from Header
-  const token = req.cookies["token"];
+  const token = req.header("x-auth-token");
 
   // Check if not token
   if (!token) {
