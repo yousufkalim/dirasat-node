@@ -60,9 +60,7 @@ exports.login = async (req, res) => {
       (err, token) => {
         if (err) throw err;
 
-        // Setting user's cookie
-        res.cookie("token", token, { maxAge: 360000, httpOnly: true });
-        res.json(user);
+        res.json({ user, token });
       }
     );
   } catch (err) {
