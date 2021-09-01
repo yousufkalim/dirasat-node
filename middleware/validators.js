@@ -28,7 +28,6 @@ exports.validateUser = [
   check("last_name", "Last Name is required.").notEmpty().trim(),
   check("education_level", "Education Level is required.").notEmpty().trim(),
   check("phone", "Phone is required.").notEmpty().trim(),
-  check("contact_me", "Contact Me is required.").isBoolean(),
   check("newsletter", "Newsletter is required.").isBoolean(),
   check("school", "School is required.").notEmpty().trim(),
   check("address", "Address is required.").notEmpty(),
