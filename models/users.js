@@ -26,10 +26,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    contact_me: {
-      type: Boolean,
-      defauult: false,
-    },
     newsletter: {
       type: Boolean,
       defauult: false,
