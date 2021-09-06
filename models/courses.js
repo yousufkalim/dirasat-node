@@ -35,6 +35,18 @@ const courseSchema = new Schema(
       ref: "Job",
       required: true,
     },
+    selectivity: {
+      type: String,
+    },
+    languagestar: {
+      type: String,
+    },
+    duration: {
+      type: String,
+    },
+    cost: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

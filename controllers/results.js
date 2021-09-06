@@ -5,7 +5,16 @@ const Domains = require("../models/domains");
 const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
 const Algorithm = require("../utils/percentageAlgorithm");
+var NodeGeocoder = require("node-geocoder");
 
+let options = {
+  provider: "google",
+  httpAdapter: "https", // Default
+  apiKey: "GOOGLE_API_KEY_REDACTED", // for Mapquest, OpenCage, Google Premier
+  formatter: "json", // 'gpx', 'string', ...
+};
+
+let geocoder = NodeGeocoder(options);
 // Create a Result
 exports.create = async (req, res) => {
   try {
@@ -37,6 +46,33 @@ exports.create = async (req, res) => {
       `${first_disc_ans}${second_disc_ans}${third_disc_ans}`
     );
 
+    // get zip code by lat long
+    const response = await geocoder.reverse({
+      lat: 45.3,
+      lon: 2.2,
+    });
+
+    console.log(
+      "courseswithzip2",
+      response[0].zipcode.substring(0, 2),
+      "user",
+      user.address.postal_code.substring(0)
+    );
+    // zipcode end
+
+    // let courseswithzip = courses.map(async (item) => {
+    //   console.log("coursesss2", item.gps_coordinates.lat);
+    //   const ress = await geocoder.reverse({
+    //     lat: item.gps_coordinates.lat,
+    //     lon: item.gps_coordinates.lng,
+    //   });
+
+    //   return {
+    //     ...item,
+    //     zipcode: ress[0].zipcode,
+    //   };
+    // });
+
     //Filtering Courses if user selects Close
     if (desc_answers_in_db[3].answer === "Près") {
       courses = courses.map((item) => {
@@ -49,7 +85,6 @@ exports.create = async (req, res) => {
           distance: result.distance,
         };
       });
-
       // filtering single course of each course_type
       // and mapping courseId and percentage for result
       courses = course_types
@@ -92,7 +127,6 @@ exports.create = async (req, res) => {
       desc_answers: disc_answers,
       courses,
     });
-
     const savedResult = await result.save();
 
     //Saving result to user Schema in DB
