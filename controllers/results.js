@@ -5,6 +5,7 @@ const Domains = require("../models/domains");
 const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
 const Algorithm = require("../utils/percentageAlgorithm");
+const checkGroup = require("../utils/checkGroup");
 var NodeGeocoder = require("node-geocoder");
 
 let options = {
@@ -47,33 +48,138 @@ exports.create = async (req, res) => {
     );
 
     // get zip code by lat long
-    const response = await geocoder.reverse({
-      lat: 45.3,
-      lon: 2.2,
-    });
 
-    console.log(
-      "courseswithzip2",
-      response[0].zipcode.substring(0, 2),
-      "user",
-      user.address.postal_code.substring(0)
-    );
-    // zipcode end
-
-    // let courseswithzip = courses.map(async (item) => {
-    //   console.log("coursesss2", item.gps_coordinates.lat);
-    //   const ress = await geocoder.reverse({
-    //     lat: item.gps_coordinates.lat,
-    //     lon: item.gps_coordinates.lng,
-    //   });
-
-    //   return {
-    //     ...item,
-    //     zipcode: ress[0].zipcode,
-    //   };
+    // const response = await geocoder.reverse({
+    //   lat: 45.3,
+    //   lon: 2.2,
     // });
 
-    //Filtering Courses if user selects Close
+    // console.log(
+    //   "courseswithzip2",
+    //   response[0].zipcode.substring(0, 2),
+    //   "user",
+    //   user.address.postal_code.substring(0)
+    // );
+    // const getZipCode = () => {
+    //   let zipCodeArray = [];
+    //   return new Promise(async (resolve, reject) => {
+    //     courses.forEach(async (item, index) => {
+    //       if (item && index <= 100) {
+    //         try {
+    //           const res = await geocoder.reverse({
+    //             lat: item.gps_coordinates.lat,
+    //             lon: item.gps_coordinates.lng,
+    //           });
+    //           // .then((res) =>
+    //           zipCodeArray.push({
+    //             ...item._doc,
+    //             zipcode: res[0].zipcode,
+    //           });
+
+    //           const length = courses.length - 1;
+
+    //           if (100 === index) {
+    //             resolve(zipCodeArray);
+    //           }
+    //         } catch (err) {
+    //           reject(err);
+    //         }
+    //       }
+    //     });
+    //   });
+    // };
+
+    // Promise.all(promises).then(console.log);
+    // console.log("break");
+    // console.log(getZipCode);
+
+    // getZipCode()
+    //   .then((res) => {
+    //     console.log("coursearray", res.length);
+    //   })
+    //   .catch((err) => {
+    //     console.log("Error -----> ", err);
+    //   });
+
+    // get star rating from zipcode
+
+    courses = courses.map((item) => {
+      if (item.zipcode) {
+        if (
+          item._doc.zipcode?.substring(0, 2) ==
+          user.address.postal_code.substring(0, 2)
+        ) {
+          if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+            return {
+              ...item._doc,
+              selectivityrating: "4",
+            };
+          }
+          if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+            return {
+              ...item._doc,
+              selectivityrating: "2",
+            };
+          }
+          return {
+            ...item._doc,
+            selectivityrating: item._doc.selectivity
+              ? item._doc.selectivity
+              : "",
+          };
+        } else {
+          if (
+            checkGroup(
+              item._doc.zipcode?.substring(0, 2),
+              user.address.postal_code.substring(0, 2)
+            )
+          ) {
+            if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+              return {
+                ...item._doc,
+                selectivityrating: "4",
+              };
+            }
+            if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+              return {
+                ...item._doc,
+                selectivityrating: "2",
+              };
+            }
+            return {
+              ...item._doc,
+              selectivityrating: item._doc.selectivity
+                ? item._doc.selectivity
+                : "",
+            };
+          } else {
+            if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+              return {
+                ...item._doc,
+                selectivityrating: "3",
+              };
+            }
+            if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+              return {
+                ...item._doc,
+                selectivityrating: "1",
+              };
+            }
+            return {
+              ...item._doc,
+              selectivityrating: item._doc.selectivity
+                ? item._doc.selectivity
+                : "",
+            };
+          }
+        }
+      } else {
+        return item._doc;
+      }
+    });
+
+    // ended get star rating from zipcode
+    // Filtering Courses if user selects Close
     if (desc_answers_in_db[3].answer === "Près") {
       courses = courses.map((item) => {
         let result = geoLib.distance({
@@ -81,7 +187,7 @@ exports.create = async (req, res) => {
           p2: { lat: item.gps_coordinates.lat, lon: item.gps_coordinates.lng },
         });
         return {
-          ...item._doc,
+          ...item,
           distance: result.distance,
         };
       });
@@ -98,6 +204,9 @@ exports.create = async (req, res) => {
         .map((item) => ({
           courseId: item._id,
           percentage: item.percentage,
+          selectivityrating: item.selectivityrating
+            ? item.selectivityrating
+            : "",
         }));
     } else {
       // Filtering courses with algorithm and embedding percentage in them
@@ -106,18 +215,19 @@ exports.create = async (req, res) => {
         const filtered = courses.filter((c) => c.type_of_course === type);
         filtered.forEach((item) => {
           filteredCourses.push({
-            ...item._doc,
+            ...item,
             percentage: algo_object[type],
           });
         });
       });
       // Mapping courseId and percentage for result
+      // console.log("filteredCourses", filteredCourses);
       courses = filteredCourses.map((item) => ({
         courseId: item._id,
         percentage: item.percentage,
+        selectivityrating: item.selectivityrating ? item.selectivityrating : "",
       }));
     }
-
     // Creating result object
     const result = new Results({
       user: user_id,
@@ -129,7 +239,7 @@ exports.create = async (req, res) => {
     });
     const savedResult = await result.save();
 
-    //Saving result to user Schema in DB
+    // Saving result to user Schema in DB
     await Users.findByIdAndUpdate(
       user_id,
       {

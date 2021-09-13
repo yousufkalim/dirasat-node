@@ -38,6 +38,9 @@ const courseSchema = new Schema(
     selectivity: {
       type: String,
     },
+    zipcode: {
+      type: String,
+    },
     languagestar: {
       type: String,
     },
