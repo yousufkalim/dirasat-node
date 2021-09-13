@@ -130,7 +130,7 @@ exports.create = async (req, res) => {
         } else {
           if (
             checkGroup(
-              item._doc.zipcode?.substring(0, 2),
+              item._doc.zipcode.substring(0, 2),
               user.address.postal_code.substring(0, 2)
             )
           ) {
