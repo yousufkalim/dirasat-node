@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
         res.json({ user, token });
       }
     );
-  } catch (err) {
+  } catch (error) {
     // Error
     console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
