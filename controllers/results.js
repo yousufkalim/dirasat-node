@@ -106,7 +106,7 @@ exports.create = async (req, res) => {
     courses = courses.map((item) => {
       if (item.zipcode) {
         if (
-          item._doc.zipcode?.substring(0, 2) ==
+          item._doc.zipcode.substring(0, 2) ==
           user.address.postal_code.substring(0, 2)
         ) {
           if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
