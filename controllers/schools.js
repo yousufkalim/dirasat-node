@@ -1,31 +1,31 @@
 const xlsxFile = require("read-excel-file/node");
-const Schools = require("../models/schools");
+const Institute = require("../models/schools");
 const fs = require("fs");
 
-// Get all Schools
+// Get all Institute
 exports.getAll = async (req, res) => {
   try {
-    const schools = await Schools.find(); //Find all schools in DB
+    const institute = await Institute.find(); //Find all institute in DB
 
-    res.status(200).send({ msg: "Ok", schools });
+    res.status(200).send({ msg: "Ok", institute });
   } catch (error) {
     console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
 
-// Post All Schools
+// Post All Institute
 exports.postAll = async (req, res) => {
   try {
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
-      let schools = rows.map((item) => item[0]);
-      schools = [...new Set(schools)]; //Filtering duplicate school names
-      const promises = schools.map((item) => {
-        const school = new Schools({ name: item });
-        return school.save();
+      let institute = rows.map((item) => item[0]);
+      institute = [...new Set(institute)]; //Filtering duplicate school names
+      const promises = institute.map((item) => {
+        const newinstitute = new Institute({ name: item, type: "College" });
+        return newinstitute.save();
       });
-      await Promise.all(promises); //saving all Schools at once
+      await Promise.all(promises); //saving all Institute at once
     });
 
     // deleting Excel File after saving data to database

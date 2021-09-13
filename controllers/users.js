@@ -14,7 +14,7 @@ exports.createUser = async (req, res) => {
       phone,
       contact_me,
       newsletter,
-      school,
+      institute,
       address,
     } = req.body;
 
@@ -35,7 +35,7 @@ exports.createUser = async (req, res) => {
         phone,
         contact_me,
         newsletter,
-        school,
+        institute,
         address,
         date_of_birth: new Date(date_of_birth),
       });

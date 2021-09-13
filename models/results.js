@@ -10,6 +10,9 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
+  selectivityrating: {
+    type: String,
+  },
 });
 
 const resultSchema = new Schema(
