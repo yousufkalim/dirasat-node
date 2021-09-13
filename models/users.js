@@ -30,10 +30,10 @@ const userSchema = new Schema(
       type: Boolean,
       defauult: false,
     },
-    school: {
+    institute: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "School",
+      ref: "Institute",
     },
     address: {
       lat: {
