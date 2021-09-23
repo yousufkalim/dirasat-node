@@ -4,8 +4,6 @@ const Domains = require("../models/domains");
 const Jobs = require("../models/jobs");
 const fs = require("fs");
 const path = require("path").resolve(__dirname, "..");
-const withzipcodearray = require("../courses/courses.json");
-// const withzipcodearray2 = require("../courses/courses2.json");
 var NodeGeocoder = require("node-geocoder");
 
 let options = {
@@ -15,7 +13,7 @@ let options = {
   formatter: "json", // 'gpx', 'string', ...
 };
 
-let geocoder = NodeGeocoder(options);
+let geocoder = NodeGeocoder(options)
 
 // Get All Courses
 exports.getAll = async (req, res) => {
@@ -54,9 +52,9 @@ exports.postAll = async (req, res) => {
           gps_coordinates:
             item[9] !== null && item[9].length > 0
               ? {
-                  lat: item[9] ? item[9].split(",")[0].trim() : null,
-                  lng: item[9] ? item[9].split(",")[1].trim() : null,
-                }
+                lat: item[9] ? item[9].split(",")[0].trim() : null,
+                lng: item[9] ? item[9].split(",")[1].trim() : null,
+              }
               : null,
         });
         // return course.save();
