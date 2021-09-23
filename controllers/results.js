@@ -186,6 +186,7 @@ exports.create = async (req, res) => {
       user: user_id,
       last_answer,
       example_of_job: answer.job.example_of_job,
+      type_of_job: answer.job.type_of_job,
       domain: domain.name,
       desc_answers: disc_answers,
       courses,

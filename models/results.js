@@ -26,6 +26,10 @@ const resultSchema = new Schema(
       type: String,
       required: true,
     },
+    type_of_job: {
+      type: String,
+      
+    },
     example_of_job: {
       type: String,
       required: true,
