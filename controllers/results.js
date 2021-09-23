@@ -8,6 +8,8 @@ const Algorithm = require("../utils/percentageAlgorithm");
 const checkGroup = require("../utils/checkGroup");
 var NodeGeocoder = require("node-geocoder");
 
+let checkgroup = true;
+
 let options = {
   provider: "google",
   httpAdapter: "https", // Default
@@ -46,65 +48,11 @@ exports.create = async (req, res) => {
     const algo_object = Algorithm(
       `${first_disc_ans}${second_disc_ans}${third_disc_ans}`
     );
-
-    // get zip code by lat long
-
-    // const response = await geocoder.reverse({
-    //   lat: 45.3,
-    //   lon: 2.2,
-    // });
-
-    // console.log(
-    //   "courseswithzip2",
-    //   response[0].zipcode.substring(0, 2),
-    //   "user",
-    //   user.address.postal_code.substring(0)
-    // );
-    // const getZipCode = () => {
-    //   let zipCodeArray = [];
-    //   return new Promise(async (resolve, reject) => {
-    //     courses.forEach(async (item, index) => {
-    //       if (item && index <= 100) {
-    //         try {
-    //           const res = await geocoder.reverse({
-    //             lat: item.gps_coordinates.lat,
-    //             lon: item.gps_coordinates.lng,
-    //           });
-    //           // .then((res) =>
-    //           zipCodeArray.push({
-    //             ...item._doc,
-    //             zipcode: res[0].zipcode,
-    //           });
-
-    //           const length = courses.length - 1;
-
-    //           if (100 === index) {
-    //             resolve(zipCodeArray);
-    //           }
-    //         } catch (err) {
-    //           reject(err);
-    //         }
-    //       }
-    //     });
-    //   });
-    // };
-
-    // Promise.all(promises).then(console.log);
-    // console.log("break");
-    // console.log(getZipCode);
-
-    // getZipCode()
-    //   .then((res) => {
-    //     console.log("coursearray", res.length);
-    //   })
-    //   .catch((err) => {
-    //     console.log("Error -----> ", err);
-    //   });
-
     // get star rating from zipcode
 
     courses = courses.map((item) => {
       if (item.zipcode) {
+        console.log("coursezip", item.zipcode);
         if (
           item._doc.zipcode.substring(0, 2) ==
           user.address.postal_code.substring(0, 2)
@@ -129,6 +77,7 @@ exports.create = async (req, res) => {
           };
         } else {
           if (
+            // checkgroup
             checkGroup(
               item._doc.zipcode.substring(0, 2),
               user.address.postal_code.substring(0, 2)
@@ -177,6 +126,10 @@ exports.create = async (req, res) => {
         return item._doc;
       }
     });
+    console.log(
+      "coursess",
+      courses.map((course) => console.log(course.selectivityrating))
+    );
 
     // ended get star rating from zipcode
     // Filtering Courses if user selects Close
@@ -233,6 +186,7 @@ exports.create = async (req, res) => {
       user: user_id,
       last_answer,
       example_of_job: answer.job.example_of_job,
+      type_of_job: answer.job.type_of_job,
       domain: domain.name,
       desc_answers: disc_answers,
       courses,
