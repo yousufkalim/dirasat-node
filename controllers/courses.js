@@ -13,7 +13,7 @@ let options = {
   formatter: "json", // 'gpx', 'string', ...
 };
 
-let geocoder = NodeGeocoder(options)
+let geocoder = NodeGeocoder(options);
 
 // Get All Courses
 exports.getAll = async (req, res) => {
@@ -31,33 +31,41 @@ exports.postAll = async (req, res) => {
   try {
     const jobs = await Jobs.find();
     const domains = await Domains.find();
-    // await Courses.deleteMany();
+    await Courses.deleteMany();
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
+      console.log("rowss,", rows[0]);
+      console.log("rowss,", rows[1]);
+      rows.shift();
+      // console.log("rows33", rows);
       const promises = rows.map((item, index) => {
+        console.log("index ", index);
+        console.log("item ", item[2]);
+
         const domainIndex = domains.findIndex((d) => d.name === item[0]); // find Domain index for _id using domain name
         const jobIndex = jobs.findIndex((j) => j.type_of_job === item[2]); // find Job index for _id using job name        console.log("JOBS", jobs[jobIndex]._id);
+        console.log("jobindex", jobIndex, jobs[jobIndex]._id);
 
         const course = new Courses({
           //Creating a new Course
           domain: domains[domainIndex]._id,
           job: jobs[jobIndex]._id,
           sub_domains: item[1],
-          type_of_course: item[3],
-          selectivity: item[4],
-          languagestar: item[5],
-          duration: item[6],
-          cost: item[7],
-          course_name: item[8],
+          type_of_course: item[5],
+          selectivity: item[6],
+          languagestar: item[7],
+          duration: item[8],
+          cost: item[9],
+          course_name: item[10],
           gps_coordinates:
-            item[9] !== null && item[9].length > 0
+            item[12] !== null && item[12].length > 0
               ? {
-                lat: item[9] ? item[9].split(",")[0].trim() : null,
-                lng: item[9] ? item[9].split(",")[1].trim() : null,
-              }
+                  lat: item[12] ? item[12].split(",")[0].trim() : null,
+                  lng: item[12] ? item[12].split(",")[1].trim() : null,
+                }
               : null,
         });
-        // return course.save();
+        return course.save();
       });
       await Promise.all(promises); //saving all courses at once
     });
