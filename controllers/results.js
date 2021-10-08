@@ -6,18 +6,8 @@ const Courses = require("../models/courses");
 const geoLib = require("geo-lib");
 const Algorithm = require("../utils/percentageAlgorithm");
 const checkGroup = require("../utils/checkGroup");
-var NodeGeocoder = require("node-geocoder");
 
 let checkgroup = true;
-
-let options = {
-  provider: "google",
-  httpAdapter: "https", // Default
-  apiKey: "GOOGLE_API_KEY_REDACTED", // for Mapquest, OpenCage, Google Premier
-  formatter: "json", // 'gpx', 'string', ...
-};
-
-let geocoder = NodeGeocoder(options);
 // Create a Result
 exports.create = async (req, res) => {
   try {
@@ -52,7 +42,6 @@ exports.create = async (req, res) => {
 
     courses = courses.map((item) => {
       if (item.zipcode) {
-        console.log("coursezip", item.zipcode);
         if (
           item._doc.zipcode.substring(0, 2) ==
           user.address.postal_code.substring(0, 2)
@@ -126,24 +115,33 @@ exports.create = async (req, res) => {
         return item._doc;
       }
     });
-    console.log(
-      "coursess",
-      courses.map((course) => console.log(course.selectivityrating))
-    );
-
     // ended get star rating from zipcode
     // Filtering Courses if user selects Close
+    let distanceRatingIs = "";
     if (desc_answers_in_db[3].answer === "Près") {
       courses = courses.map((item) => {
         let result = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lat },
+          p1: { lat: user.address.lat, lon: user.address.lng },
           p2: { lat: item.gps_coordinates.lat, lon: item.gps_coordinates.lng },
         });
+        if (result.distance >= 0 && result.distance <= 30) {
+          distanceRatingIs = 5;
+        } else if (result.distance >= 31 && result.distance <= 60) {
+          distanceRatingIs = 4;
+        } else if (result.distance >= 61 && result.distance <= 200) {
+          distanceRatingIs = 3;
+        } else if (result.distance >= 201 && result.distance <= 400) {
+          distanceRatingIs = 2;
+        } else {
+          distanceRatingIs = 1;
+        }
         return {
           ...item,
           distance: result.distance,
+          distanceRatingIs,
         };
       });
+      console.log("Pres courses", courses);
       // filtering single course of each course_type
       // and mapping courseId and percentage for result
       courses = course_types
@@ -160,10 +158,11 @@ exports.create = async (req, res) => {
           selectivityrating: item.selectivityrating
             ? item.selectivityrating
             : "",
+          distancerating: item.distanceRatingIs,
         }));
     } else {
       // Filtering courses with algorithm and embedding percentage in them
-      const filteredCourses = [];
+      let filteredCourses = [];
       course_types.forEach((type) => {
         const filtered = courses.filter((c) => c.type_of_course === type);
         filtered.forEach((item) => {
@@ -174,13 +173,50 @@ exports.create = async (req, res) => {
         });
       });
       // Mapping courseId and percentage for result
-      // console.log("filteredCourses", filteredCourses);
+
+      // for distance Rating
+      filteredCourses = filteredCourses.map((item) => {
+        if (item.gps_coordinates) {
+          let result = geoLib.distance({
+            p1: { lat: user.address.lat, lon: user.address.lng },
+            p2: {
+              lat: item.gps_coordinates.lat,
+              lon: item.gps_coordinates.lng,
+            },
+          });
+          if (result.distance >= 0 && result.distance <= 30) {
+            distanceRatingIs = 5;
+          } else if (result.distance >= 31 && result.distance <= 60) {
+            distanceRatingIs = 4;
+          } else if (result.distance >= 61 && result.distance <= 200) {
+            distanceRatingIs = 3;
+          } else if (result.distance >= 201 && result.distance <= 400) {
+            distanceRatingIs = 2;
+          } else {
+            distanceRatingIs = 1;
+          }
+          return {
+            ...item,
+            distanceRatingIs,
+            distance: result.distance,
+          };
+        } else {
+          return {
+            ...item,
+            distanceRatingIs: "N/A",
+          };
+        }
+      });
+      console.log("loin courses", filteredCourses);
+
       courses = filteredCourses.map((item) => ({
         courseId: item._id,
         percentage: item.percentage,
         selectivityrating: item.selectivityrating ? item.selectivityrating : "",
+        distancerating: item.distanceRatingIs,
       }));
     }
+
     // Creating result object
     const result = new Results({
       user: user_id,
@@ -191,6 +227,8 @@ exports.create = async (req, res) => {
       desc_answers: disc_answers,
       courses,
     });
+    // console.log("rrr", result);
+    // console.log("asssssss", courseDetailwithdistance);
     const savedResult = await result.save();
 
     // Saving result to user Schema in DB

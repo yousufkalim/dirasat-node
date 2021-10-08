@@ -13,6 +13,9 @@ const courseSchema = new Schema({
   selectivityrating: {
     type: String,
   },
+  distancerating: {
+    type: String,
+  },
 });
 
 const resultSchema = new Schema(
@@ -28,7 +31,6 @@ const resultSchema = new Schema(
     },
     type_of_job: {
       type: String,
-      
     },
     example_of_job: {
       type: String,
