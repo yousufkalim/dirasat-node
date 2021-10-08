@@ -141,7 +141,6 @@ exports.create = async (req, res) => {
           distanceRatingIs,
         };
       });
-      console.log("Pres courses", courses);
       // filtering single course of each course_type
       // and mapping courseId and percentage for result
       courses = course_types
@@ -207,8 +206,6 @@ exports.create = async (req, res) => {
           };
         }
       });
-      console.log("loin courses", filteredCourses);
-
       courses = filteredCourses.map((item) => ({
         courseId: item._id,
         percentage: item.percentage,
@@ -227,8 +224,6 @@ exports.create = async (req, res) => {
       desc_answers: disc_answers,
       courses,
     });
-    // console.log("rrr", result);
-    // console.log("asssssss", courseDetailwithdistance);
     const savedResult = await result.save();
 
     // Saving result to user Schema in DB

@@ -34,17 +34,10 @@ exports.postAll = async (req, res) => {
     await Courses.deleteMany();
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
-      console.log("rowss,", rows[0]);
-      console.log("rowss,", rows[1]);
       rows.shift();
-      // console.log("rows33", rows);
       const promises = rows.map((item, index) => {
-        console.log("index ", index);
-        console.log("item ", item[2]);
-
         const domainIndex = domains.findIndex((d) => d.name === item[0]); // find Domain index for _id using domain name
         const jobIndex = jobs.findIndex((j) => j.type_of_job === item[2]); // find Job index for _id using job name        console.log("JOBS", jobs[jobIndex]._id);
-        console.log("jobindex", jobIndex, jobs[jobIndex]._id);
 
         const course = new Courses({
           //Creating a new Course
