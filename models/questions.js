@@ -6,6 +6,9 @@ const questionScehma = new Schema(
       type: String,
       required: true,
     },
+    facialExpression: {
+      type: String,
+    },
     questionType: {
       type: String,
       required: true,
