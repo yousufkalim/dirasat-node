@@ -27,8 +27,6 @@ exports.create = async (req, res) => {
     let courses = await Courses.find({
       job: answer.job,
       domain: answer.domain,
-      // language:
-      //   desc_answers_in_db[5].answer === "Français" ? "French" : "English",
     });
 
     // Getting the First letters of disc answers for algorithm
