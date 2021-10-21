@@ -116,11 +116,70 @@ exports.create = async (req, res) => {
     // ended get star rating from zipcode
     // Filtering Courses if user selects Close
     let distanceRatingIs = "";
-    if (desc_answers_in_db[3].answer === "Près") {
-      courses = courses.map((item) => {
+    // if (desc_answers_in_db[3].answer === "Près") {
+    //   courses = courses.map((item) => {
+    //     let result = geoLib.distance({
+    //       p1: { lat: user.address.lat, lon: user.address.lng },
+    //       p2: { lat: item.gps_coordinates.lat, lon: item.gps_coordinates.lng },
+    //     });
+    //     if (result.distance >= 0 && result.distance <= 30) {
+    //       distanceRatingIs = 5;
+    //     } else if (result.distance >= 31 && result.distance <= 60) {
+    //       distanceRatingIs = 4;
+    //     } else if (result.distance >= 61 && result.distance <= 200) {
+    //       distanceRatingIs = 3;
+    //     } else if (result.distance >= 201 && result.distance <= 400) {
+    //       distanceRatingIs = 2;
+    //     } else {
+    //       distanceRatingIs = 1;
+    //     }
+    //     return {
+    //       ...item,
+    //       distance: result.distance,
+    //       distanceRatingIs,
+    //     };
+    //   });
+    //   // filtering single course of each course_type
+    //   // and mapping courseId and percentage for result
+    //   courses = course_types
+    //     .map((type) => {
+    //       const filtered = courses.filter((c) => c.type_of_course === type);
+    //       filtered.sort((a, b) => a.distance - b.distance);
+    //       filtered[0] != null && (filtered[0].percentage = algo_object[type]);
+    //       return filtered[0];
+    //     })
+    //     .filter((c) => c != null)
+    //     .map((item) => ({
+    //       courseId: item._id,
+    //       percentage: item.percentage,
+    //       selectivityrating: item.selectivityrating
+    //         ? item.selectivityrating
+    //         : "",
+    //       distancerating: item.distanceRatingIs,
+    //     }));
+    // } else {
+    // Filtering courses with algorithm and embedding percentage in them
+    let filteredCourses = [];
+    course_types.forEach((type) => {
+      const filtered = courses.filter((c) => c.type_of_course === type);
+      filtered.forEach((item) => {
+        filteredCourses.push({
+          ...item,
+          percentage: algo_object[type],
+        });
+      });
+    });
+    // Mapping courseId and percentage for result
+
+    // for distance Rating
+    filteredCourses = filteredCourses.map((item) => {
+      if (item.gps_coordinates) {
         let result = geoLib.distance({
           p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: { lat: item.gps_coordinates.lat, lon: item.gps_coordinates.lng },
+          p2: {
+            lat: item.gps_coordinates.lat,
+            lon: item.gps_coordinates.lng,
+          },
         });
         if (result.distance >= 0 && result.distance <= 30) {
           distanceRatingIs = 5;
@@ -135,82 +194,24 @@ exports.create = async (req, res) => {
         }
         return {
           ...item,
-          distance: result.distance,
           distanceRatingIs,
+          distance: result.distance,
         };
-      });
-      // filtering single course of each course_type
-      // and mapping courseId and percentage for result
-      courses = course_types
-        .map((type) => {
-          const filtered = courses.filter((c) => c.type_of_course === type);
-          filtered.sort((a, b) => a.distance - b.distance);
-          filtered[0] != null && (filtered[0].percentage = algo_object[type]);
-          return filtered[0];
-        })
-        .filter((c) => c != null)
-        .map((item) => ({
-          courseId: item._id,
-          percentage: item.percentage,
-          selectivityrating: item.selectivityrating
-            ? item.selectivityrating
-            : "",
-          distancerating: item.distanceRatingIs,
-        }));
-    } else {
-      // Filtering courses with algorithm and embedding percentage in them
-      let filteredCourses = [];
-      course_types.forEach((type) => {
-        const filtered = courses.filter((c) => c.type_of_course === type);
-        filtered.forEach((item) => {
-          filteredCourses.push({
-            ...item,
-            percentage: algo_object[type],
-          });
-        });
-      });
-      // Mapping courseId and percentage for result
-
-      // for distance Rating
-      filteredCourses = filteredCourses.map((item) => {
-        if (item.gps_coordinates) {
-          let result = geoLib.distance({
-            p1: { lat: user.address.lat, lon: user.address.lng },
-            p2: {
-              lat: item.gps_coordinates.lat,
-              lon: item.gps_coordinates.lng,
-            },
-          });
-          if (result.distance >= 0 && result.distance <= 30) {
-            distanceRatingIs = 5;
-          } else if (result.distance >= 31 && result.distance <= 60) {
-            distanceRatingIs = 4;
-          } else if (result.distance >= 61 && result.distance <= 200) {
-            distanceRatingIs = 3;
-          } else if (result.distance >= 201 && result.distance <= 400) {
-            distanceRatingIs = 2;
-          } else {
-            distanceRatingIs = 1;
-          }
-          return {
-            ...item,
-            distanceRatingIs,
-            distance: result.distance,
-          };
-        } else {
-          return {
-            ...item,
-            distanceRatingIs: "N/A",
-          };
-        }
-      });
-      courses = filteredCourses.map((item) => ({
-        courseId: item._id,
-        percentage: item.percentage,
-        selectivityrating: item.selectivityrating ? item.selectivityrating : "",
-        distancerating: item.distanceRatingIs,
-      }));
-    }
+      } else {
+        return {
+          ...item,
+          distanceRatingIs: "N/A",
+        };
+      }
+    });
+    filteredCourses.sort((a, b) => a.distance - b.distance);
+    courses = filteredCourses.map((item) => ({
+      courseId: item._id,
+      percentage: item.percentage,
+      selectivityrating: item.selectivityrating ? item.selectivityrating : "",
+      distancerating: item.distanceRatingIs,
+    }));
+    // }
 
     // Creating result object
     const result = new Results({
