@@ -29,12 +29,15 @@ exports.create = async (req, res) => {
       domain: answer.domain,
     });
 
-    // Getting the First letters of disc answers for algorithm
-    const first_disc_ans = desc_answers_in_db[0].answer.substring(0, 1);
-    const second_disc_ans = desc_answers_in_db[1].answer.substring(0, 1);
-    const third_disc_ans = desc_answers_in_db[2].answer.substring(0, 1);
+    // Getting the First letters of disc answers for algorithms
+    const first_disc_ans =
+      desc_answers_in_db[1].answer.substring(0, 1) === "O" ? "P" : "G";
+    const second_disc_ans =
+      desc_answers_in_db[2].answer.substring(0, 1) === "O" ? "S" : "N";
+    const third_disc_ans =
+      desc_answers_in_db[4].answer.substring(0, 1) === "O" ? "L" : "C";
     const algo_object = Algorithm(
-      `${first_disc_ans}${second_disc_ans}${third_disc_ans}`
+      `${first_disc_ans}${third_disc_ans}${second_disc_ans}`
     );
     // get star rating from zipcode
 
