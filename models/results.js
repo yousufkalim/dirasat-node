@@ -10,6 +10,10 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
+  typeofcourse: {
+    type: String,
+  },
+
   selectivityrating: {
     type: String,
   },

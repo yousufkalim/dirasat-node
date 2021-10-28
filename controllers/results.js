@@ -163,6 +163,13 @@ exports.create = async (req, res) => {
     // } else {
     // Filtering courses with algorithm and embedding percentage in them
     let filteredCourses = [];
+    let newfilteredCourses = [];
+    let CPGE = [];
+    let BTS = [];
+    let BUT = [];
+    let Ecole = [];
+    let Licence = [];
+
     course_types.forEach((type) => {
       const filtered = courses.filter((c) => c.type_of_course === type);
       filtered.forEach((item) => {
@@ -172,6 +179,7 @@ exports.create = async (req, res) => {
         });
       });
     });
+
     // Mapping courseId and percentage for result
 
     // for distance Rating
@@ -211,12 +219,11 @@ exports.create = async (req, res) => {
     courses = filteredCourses.map((item) => ({
       courseId: item._id,
       percentage: item.percentage,
+      typeofcourse: item.type_of_course,
       selectivityrating: item.selectivityrating ? item.selectivityrating : "",
       distancerating: item.distanceRatingIs,
     }));
-    // }
 
-    // Creating result object
     const result = new Results({
       user: user_id,
       last_answer,
@@ -238,7 +245,6 @@ exports.create = async (req, res) => {
       },
       { new: true }
     );
-
     const resultForResponse = await Results.findById(savedResult._id)
       .populate("courses.courseId")
       .populate({
@@ -247,9 +253,73 @@ exports.create = async (req, res) => {
         populate: { path: "domain" },
       }); // Fetching results from DB for Response
 
+    resultForResponse.courses.forEach((item) => {
+      if (item.courseId.type_of_course === "CPGE") {
+        CPGE.push(item);
+      }
+      if (item.courseId.type_of_course === "BTS") {
+        BTS.push(item);
+      }
+      if (item.courseId.type_of_course === "BUT") {
+        BUT.push(item);
+      }
+      if (item.courseId.type_of_course === "Ecole Post-Bac") {
+        Ecole.push(item);
+      }
+      if (item.courseId.type_of_course === "Licence") {
+        Licence.push(item);
+      }
+    });
+
+    if (CPGE.length >= 1) {
+      newfilteredCourses.push({
+        type: CPGE[0].courseId.type_of_course,
+        percentage: CPGE[0].percentage,
+        courses: [...CPGE],
+      });
+    }
+    if (Licence.length >= 1) {
+      newfilteredCourses.push({
+        type: Licence[0].courseId.type_of_course,
+        percentage: Licence[0].percentage,
+        courses: [...Licence],
+      });
+    }
+    if (BTS.length >= 1) {
+      newfilteredCourses.push({
+        type: BTS[0].courseId.type_of_course,
+        percentage: BTS[0].percentage,
+
+        courses: [...BTS],
+      });
+    }
+    if (Ecole.length >= 1) {
+      newfilteredCourses.push({
+        type: Ecole[0].courseId.type_of_course,
+        percentage: Ecole[0].percentage,
+        courses: [...Ecole],
+      });
+    }
+    if (BUT.length >= 1) {
+      newfilteredCourses.push({
+        type: BUT[0].courseId.type_of_course,
+        percentage: BUT[0].percentage,
+        courses: [...BUT],
+      });
+    }
+    newfilteredCourses.sort((a, b) => a.percentage - b.percentage);
+
+    let newResult = {
+      example_of_job: answer.job.example_of_job,
+      type_of_job: answer.job.type_of_job,
+      domain: domain.name,
+      data: newfilteredCourses,
+    };
+
     res.status(200).send({
       msg: "Ok",
-      result: resultForResponse,
+      // result: resultForResponse,
+      result: newResult,
     });
   } catch (error) {
     console.log("Error ----> ", error);
