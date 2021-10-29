@@ -307,7 +307,7 @@ exports.create = async (req, res) => {
         courses: [...BUT],
       });
     }
-    newfilteredCourses.sort((a, b) => a.percentage - b.percentage);
+    newfilteredCourses.sort((a, b) => b.percentage - a.percentage);
 
     let newResult = {
       example_of_job: answer.job.example_of_job,
