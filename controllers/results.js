@@ -164,6 +164,7 @@ exports.create = async (req, res) => {
     // Filtering courses with algorithm and embedding percentage in them
     let filteredCourses = [];
     let newfilteredCourses = [];
+    // initialize seperate array for type of courses
     let CPGE = [];
     let BTS = [];
     let BUT = [];
@@ -253,6 +254,32 @@ exports.create = async (req, res) => {
         populate: { path: "domain" },
       }); // Fetching results from DB for Response
 
+    // sort the courses on the base of last descrAnswer
+    if (desc_answers_in_db[5].answer == "Sélectivité") {
+      resultForResponse.courses.sort(
+        (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
+      );
+    } else if (desc_answers_in_db[5].answer == "Coût") {
+      resultForResponse.courses.sort(
+        (a, b) => parseInt(b.courseId.cost) - parseInt(a.courseId.cost)
+      );
+    } else if (desc_answers_in_db[5].answer == "Langue") {
+      resultForResponse.courses.sort(
+        (a, b) =>
+          parseInt(b.courseId.languagestar) - parseInt(a.courseId.languagestar)
+      );
+    } else if (desc_answers_in_db[5].answer == "Durée") {
+      resultForResponse.courses.sort(
+        (a, b) => parseInt(b.courseId.duration) - parseInt(a.courseId.duration)
+      );
+    } else {
+      resultForResponse.courses.sort(
+        (a, b) => parseInt(b.distancerating) - parseInt(a.distancerating)
+      );
+    }
+
+    // seperate each type of course for sorting purpose
+
     resultForResponse.courses.forEach((item) => {
       if (item.courseId.type_of_course === "CPGE") {
         CPGE.push(item);
@@ -271,6 +298,7 @@ exports.create = async (req, res) => {
       }
     });
 
+    // create data with type of course and all courses
     if (CPGE.length >= 1) {
       newfilteredCourses.push({
         type: CPGE[0].courseId.type_of_course,
@@ -307,6 +335,7 @@ exports.create = async (req, res) => {
         courses: [...BUT],
       });
     }
+    // sort type of course on the base of percentage
     newfilteredCourses.sort((a, b) => b.percentage - a.percentage);
 
     let newResult = {
