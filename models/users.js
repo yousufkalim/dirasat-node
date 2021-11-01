@@ -31,7 +31,7 @@ const userSchema = new Schema(
       defauult: false,
     },
     institute: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
       ref: "Institute",
     },
