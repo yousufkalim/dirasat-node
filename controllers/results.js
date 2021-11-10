@@ -279,6 +279,7 @@ exports.create = async (req, res) => {
     }
 
     // seperate each type of course for sorting purpose
+    console.log("resultForResponse444444", resultForResponse);
 
     resultForResponse.courses.forEach((item) => {
       if (item.courseId.type_of_course === "CPGE") {
@@ -300,39 +301,48 @@ exports.create = async (req, res) => {
 
     // create data with type of course and all courses
     if (CPGE.length >= 1) {
+      // limit the courses
+      const getTenCourses = CPGE.slice(0, 10);
       newfilteredCourses.push({
         type: CPGE[0].courseId.type_of_course,
         percentage: CPGE[0].percentage,
-        courses: [...CPGE],
+        courses: [...getTenCourses],
       });
     }
     if (Licence.length >= 1) {
+      // limit the courses
+      const getTenCourses = Licence.slice(0, 10);
       newfilteredCourses.push({
         type: Licence[0].courseId.type_of_course,
         percentage: Licence[0].percentage,
-        courses: [...Licence],
+        courses: [...getTenCourses],
       });
     }
     if (BTS.length >= 1) {
+      // limit the courses
+      const getTenCourses = BTS.slice(0, 10);
       newfilteredCourses.push({
         type: BTS[0].courseId.type_of_course,
         percentage: BTS[0].percentage,
-
-        courses: [...BTS],
+        courses: [...getTenCourses],
       });
     }
     if (Ecole.length >= 1) {
+      // limit the courses
+      const getTenCourses = Ecole.slice(0, 10);
       newfilteredCourses.push({
         type: Ecole[0].courseId.type_of_course,
         percentage: Ecole[0].percentage,
-        courses: [...Ecole],
+        courses: [...getTenCourses],
       });
     }
     if (BUT.length >= 1) {
+      // limit the courses
+      const getTenCourses = BUT.slice(0, 10);
       newfilteredCourses.push({
         type: BUT[0].courseId.type_of_course,
         percentage: BUT[0].percentage,
-        courses: [...BUT],
+        courses: [...getTenCourses],
       });
     }
     // sort type of course on the base of percentage
