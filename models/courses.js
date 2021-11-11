@@ -50,6 +50,9 @@ const courseSchema = new Schema(
     cost: {
       type: String,
     },
+    city: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

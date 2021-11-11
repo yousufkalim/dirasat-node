@@ -34,11 +34,11 @@ exports.postAll = async (req, res) => {
     await Courses.deleteMany();
     // Reading All rows from Excel file and pushing in data array
     await xlsxFile(req.file.path).then(async (rows) => {
-      rows.shift();
-      const promises = rows.map((item, index) => {
+      // rows.shift();
+      let newRows = rows.splice(2);
+      const promises = newRows.map((item, index) => {
         const domainIndex = domains.findIndex((d) => d.name === item[0]); // find Domain index for _id using domain name
         const jobIndex = jobs.findIndex((j) => j.type_of_job === item[2]); // find Job index for _id using job name        console.log("JOBS", jobs[jobIndex]._id);
-
         const course = new Courses({
           //Creating a new Course
           domain: domains[domainIndex]._id,
@@ -57,7 +57,13 @@ exports.postAll = async (req, res) => {
                   lng: item[12] ? item[12].split(",")[1].trim() : null,
                 }
               : null,
+          zipcode:
+            item[13].charAt(item[13].length - 3) === "9"
+              ? item[13].slice(-3)
+              : item[13].slice(-2),
+          city: item[13],
         });
+        // console.log("course4545", course);
         return course.save();
       });
       await Promise.all(promises); //saving all courses at once
