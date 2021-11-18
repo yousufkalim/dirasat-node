@@ -3,6 +3,10 @@ const Questions = require("../models/questions");
 const Answers = require("../models/answers");
 const nodemailer = require("nodemailer");
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twilio = require("twilio")(accountSid, authToken);
+
 var transporter = nodemailer.createTransport({
   // host: "smtp.yandex.com",
   // port: 465,
@@ -16,6 +20,7 @@ var transporter = nodemailer.createTransport({
 
 // Create a User
 exports.createUser = async (req, res) => {
+  const otp = Math.floor(Math.random() * 899999 + 100000);
   try {
     const {
       email,
@@ -31,8 +36,6 @@ exports.createUser = async (req, res) => {
     } = req.body;
 
     const emailInDb = await Users.findOne({ email });
-    const questions = await Questions.find();
-    const answers = await Answers.find().populate("question");
 
     if (emailInDb) {
       let newUser = {
@@ -46,7 +49,25 @@ exports.createUser = async (req, res) => {
         institute,
         address,
         date_of_birth: new Date(date_of_birth),
+        otp,
       };
+      // sending otp to number
+      // console.log("phone is", `+92${phone.substring(1)}1`);
+      twilio.messages
+        .create({
+          body: `votre code otp est ${otp} pour l'orienteur`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+33${phone.substring(1)}`,
+        })
+        .then(async () => {
+          console.log("OTP sent");
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
+
       let updatedUser = await Users.findOneAndUpdate(
         { _id: emailInDb._id },
         {
@@ -56,10 +77,7 @@ exports.createUser = async (req, res) => {
           new: true,
         }
       );
-
-      return res
-        .status(200)
-        .send({ msg: "Ok", questions, answers, user: updatedUser });
+      return res.json({ status: 200, message: "ok" });
     } else {
       const user = new Users({
         email,
@@ -72,19 +90,52 @@ exports.createUser = async (req, res) => {
         institute,
         address,
         date_of_birth: new Date(date_of_birth),
+        otp,
       });
 
+      // sending otp to number
+      twilio.messages
+        .create({
+          body: `votre code otp est ${otp} pour l'orienteur`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+33${phone.substring(1)}`,
+        })
+        .then(async () => {
+          console.log("OTP sent");
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
       const savedUser = await user.save();
-
-      return res
-        .status(200)
-        .send({ msg: "Ok", questions, answers, user: savedUser });
+      return res.status(200).send({ msg: "Ok" });
     }
   } catch (error) {
     console.log("Error ----> ", error);
     res.status(500).send("Something Failed");
   }
 };
+
+// Verify a User
+exports.verifyUser = async (req, res) => {
+  try {
+    const questions = await Questions.find();
+    const answers = await Answers.find().populate("question");
+    let user = await Users.findOne({ otp: req.body.otp });
+    if (!user) return res.status(202).send("Please enter correct otp");
+    user.otp = null;
+    userData = await user.save();
+
+    return res
+      .status(200)
+      .send({ msg: "Ok", questions, answers, user: userData });
+  } catch (error) {
+    console.log("Error ----> ", error);
+    res.status(500).send("Something Failed");
+  }
+};
+
 // Update a User
 exports.updateUser = async (req, res) => {
   try {
