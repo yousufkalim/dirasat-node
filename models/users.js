@@ -57,6 +57,7 @@ const userSchema = new Schema(
         required: true,
       },
     },
+    otp: { type: String },
     results: [
       {
         type: Schema.Types.ObjectId,

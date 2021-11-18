@@ -36,6 +36,7 @@
     "nodemon": "^2.0.12",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "read-excel-file": "^5.2.8"
+    "read-excel-file": "^5.2.8",
+    "twilio": "^3.71.2"
   }
 }
