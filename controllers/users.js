@@ -96,7 +96,7 @@ exports.createUser = async (req, res) => {
       // sending otp to number
       twilio.messages
         .create({
-          body: `votre code otp est ${otp} pour l'orienteur`,
+          body: `Votre code Orientator est ${otp}`,
           from: process.env.TWILIO_NUMBER,
           to: `+33${phone.substring(1)}`,
         })
