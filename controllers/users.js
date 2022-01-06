@@ -167,8 +167,8 @@ exports.inviteUser = async (req, res) => {
     var mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Invitation à Orientator",
-      html: `<div><h4> Bonjour</h4><p>${firstName} ${lastName}   t’invites sur la plateforme Orientator, pour t’aider à choisir ton Parcours Supérieur.</p><p>Rejoins-nous sur <a href="https://www.orientator.com/" >https://www.orientator.com/</a></p><p>L’équipe Orientator</p></div>`,
+      subject: "Invitation sur Orientator",
+      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Orientator pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.orientator.com/" >https://www.orientator.com/</a></p><p>L'équipe Orientator</p></div>`,
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
