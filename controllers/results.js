@@ -11,6 +11,7 @@ let checkgroup = true;
 // Create a Result
 exports.create = async (req, res) => {
   try {
+    // console.log("req.body", req.body);
     const { last_answer, user_id, disc_answers } = req.body;
     const course_types = ["BTS", "BUT", "CPGE", "Ecole Post-Bac", "Licence"];
 
@@ -253,9 +254,9 @@ exports.create = async (req, res) => {
         // this is for nested population . courseId has a property domain which is being populated
         populate: { path: "domain" },
       }); // Fetching results from DB for Response
-
+    // console.log("desc_answers_in_db[5].answer", desc_answers_in_db[5].answer);
     // sort the courses on the base of last descrAnswer
-    if (desc_answers_in_db[5].answer == "Sélectivité") {
+    if (desc_answers_in_db[5].answer == "Prestige") {
       resultForResponse.courses.sort(
         (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
       );
@@ -279,22 +280,78 @@ exports.create = async (req, res) => {
     }
 
     // seperate each type of course for sorting purpose
-    console.log("resultForResponse444444", resultForResponse);
+    // console.log("resultForResponse1111", resultForResponse);
 
-    resultForResponse.courses.forEach((item) => {
+    resultForResponse.courses.forEach((item, i) => {
       if (item.courseId.type_of_course === "CPGE") {
+        let d = geoLib.distance({
+          p1: { lat: user.address.lat, lon: user.address.lng },
+          p2: {
+            lat: item.courseId.gps_coordinates.lat,
+            lon: item.courseId.gps_coordinates.lng,
+          },
+        });
+
+        // console.log("CPGE courseindex", i, d.distance);
+        // console.log("CPGE course", item, d.distance);
         CPGE.push(item);
       }
       if (item.courseId.type_of_course === "BTS") {
+        let d = geoLib.distance({
+          p1: { lat: user.address.lat, lon: user.address.lng },
+          p2: {
+            lat: item.courseId.gps_coordinates.lat,
+            lon: item.courseId.gps_coordinates.lng,
+          },
+        });
+        // console.log(
+        //   "bts cordniates user lat long",
+        //   user.address.lat,
+        //   user.address.lng
+        // );
+        // console.log(
+        //   "bts cordniates course lat long",
+        //   item.courseId.gps_coordinates.lat,
+        //   item.courseId.gps_coordinates.lng
+        // );
+        // console.log("BTS courseindex", i, d.distance);
+        // console.log("BTS course", item, d.distance);
         BTS.push(item);
       }
       if (item.courseId.type_of_course === "BUT") {
+        let d = geoLib.distance({
+          p1: { lat: user.address.lat, lon: user.address.lng },
+          p2: {
+            lat: item.courseId.gps_coordinates.lat,
+            lon: item.courseId.gps_coordinates.lng,
+          },
+        });
+        // console.log("BUT courseindex", i, d.distance);
+        // console.log("BUT course", item, d.distance);
         BUT.push(item);
       }
       if (item.courseId.type_of_course === "Ecole Post-Bac") {
+        let d = geoLib.distance({
+          p1: { lat: user.address.lat, lon: user.address.lng },
+          p2: {
+            lat: item.courseId.gps_coordinates.lat,
+            lon: item.courseId.gps_coordinates.lng,
+          },
+        });
+        // console.log("Ecole Post-Bac courseindex", i, d.distance);
+        // console.log("Ecole Post-Bac course", item, d.distance);
         Ecole.push(item);
       }
       if (item.courseId.type_of_course === "Licence") {
+        let d = geoLib.distance({
+          p1: { lat: user.address.lat, lon: user.address.lng },
+          p2: {
+            lat: item.courseId.gps_coordinates.lat,
+            lon: item.courseId.gps_coordinates.lng,
+          },
+        });
+        // console.log("Licence courseindex", i, d.distance);
+        // console.log("Licence course", item, d.distance);
         Licence.push(item);
       }
     });
