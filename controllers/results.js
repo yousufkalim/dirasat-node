@@ -405,7 +405,7 @@ exports.create = async (req, res) => {
           },
         });
         // console.log("Licence courseindex", i, d.distance);
-        // console.log("Licence course", item, d.distance);
+        console.log("Licence course", item, d.distance);
         Licence.push(item);
       }
     });
