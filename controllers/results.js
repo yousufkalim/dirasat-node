@@ -257,21 +257,72 @@ exports.create = async (req, res) => {
     // console.log("desc_answers_in_db[5].answer", desc_answers_in_db[5].answer);
     // sort the courses on the base of last descrAnswer
     if (desc_answers_in_db[5].answer == "Prestige") {
+      console.log("kkkkiii");
       resultForResponse.courses.sort(
-        (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
+        // (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
+        // check rating criteria and distance criteria
+        (a, b) => {
+          a.selectivityrating = parseInt(a.selectivityrating);
+          b.selectivityrating = parseInt(b.selectivityrating);
+          a.distancerating = parseInt(a.distancerating);
+          b.distancerating = parseInt(b.distancerating);
+
+          if (a.selectivityrating === b.selectivityrating) {
+            return b.distancerating - a.distancerating;
+          }
+          return a.selectivityrating > b.selectivityrating ? -1 : 1;
+        }
       );
+      // then sort by distance
     } else if (desc_answers_in_db[5].answer == "Coût") {
       resultForResponse.courses.sort(
-        (a, b) => parseInt(b.courseId.cost) - parseInt(a.courseId.cost)
+        // (a, b) => parseInt(b.courseId.cost) - parseInt(a.courseId.cost)
+        // check rating criteria and distance criteria
+        (a, b) => {
+          a.courseId.cost = parseInt(a.courseId.cost);
+          b.courseId.cost = parseInt(b.courseId.cost);
+          a.distancerating = parseInt(a.distancerating);
+          b.distancerating = parseInt(b.distancerating);
+
+          if (a.courseId.cost === b.courseId.cost) {
+            return b.distancerating - a.distancerating;
+          }
+          return a.courseId.cost > b.courseId.cost ? -1 : 1;
+        }
       );
     } else if (desc_answers_in_db[5].answer == "Langue") {
       resultForResponse.courses.sort(
-        (a, b) =>
-          parseInt(b.courseId.languagestar) - parseInt(a.courseId.languagestar)
+        // (a, b) =>
+        //   parseInt(b.courseId.languagestar) - parseInt(a.courseId.languagestar)
+
+        // check rating criteria and after rating check distance criteria
+        (a, b) => {
+          a.courseId.languagestar = parseInt(a.courseId.languagestar);
+          b.courseId.languagestar = parseInt(b.courseId.languagestar);
+          a.distancerating = parseInt(a.distancerating);
+          b.distancerating = parseInt(b.distancerating);
+
+          if (a.courseId.languagestar === b.courseId.languagestar) {
+            return b.distancerating - a.distancerating;
+          }
+          return a.courseId.languagestar > b.courseId.languagestar ? -1 : 1;
+        }
       );
     } else if (desc_answers_in_db[5].answer == "Durée") {
       resultForResponse.courses.sort(
-        (a, b) => parseInt(b.courseId.duration) - parseInt(a.courseId.duration)
+        // (a, b) => parseInt(b.courseId.duration) - parseInt(a.courseId.duration)
+        // check rating criteria and after rating check distance criteria
+        (a, b) => {
+          a.courseId.duration = parseInt(a.courseId.duration);
+          b.courseId.duration = parseInt(b.courseId.duration);
+          a.distancerating = parseInt(a.distancerating);
+          b.distancerating = parseInt(b.distancerating);
+
+          if (a.courseId.duration === b.courseId.duration) {
+            return b.distancerating - a.distancerating;
+          }
+          return a.courseId.duration > b.courseId.duration ? -1 : 1;
+        }
       );
     } else {
       resultForResponse.courses.sort(
@@ -293,7 +344,7 @@ exports.create = async (req, res) => {
         });
 
         // console.log("CPGE courseindex", i, d.distance);
-        // console.log("CPGE course", item, d.distance);
+        console.log("CPGE course", item, d.distance);
         CPGE.push(item);
       }
       if (item.courseId.type_of_course === "BTS") {
@@ -315,7 +366,7 @@ exports.create = async (req, res) => {
         //   item.courseId.gps_coordinates.lng
         // );
         // console.log("BTS courseindex", i, d.distance);
-        // console.log("BTS course", item, d.distance);
+        console.log("BTS course", item, d.distance);
         BTS.push(item);
       }
       if (item.courseId.type_of_course === "BUT") {
@@ -338,8 +389,11 @@ exports.create = async (req, res) => {
             lon: item.courseId.gps_coordinates.lng,
           },
         });
-        // console.log("Ecole Post-Bac courseindex", i, d.distance);
-        // console.log("Ecole Post-Bac course", item, d.distance);
+        console.log(
+          "desc_answers_in_db[5].answer",
+          desc_answers_in_db[5].answer
+        );
+        console.log("Ecole Post-Bac course", item, d.distance, item.courseId);
         Ecole.push(item);
       }
       if (item.courseId.type_of_course === "Licence") {
@@ -351,7 +405,7 @@ exports.create = async (req, res) => {
           },
         });
         // console.log("Licence courseindex", i, d.distance);
-        // console.log("Licence course", item, d.distance);
+        console.log("Licence course", item, d.distance);
         Licence.push(item);
       }
     });
