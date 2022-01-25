@@ -268,25 +268,22 @@ exports.create = async (req, res) => {
           b.distancerating = parseInt(b.distancerating);
 
           if (a.selectivityrating === b.selectivityrating) {
-            return b.distancerating - a.distancerating ;
-          }  
-            return a.selectivityrating > b.selectivityrating ? -1 : 1;
-          
+            return b.distancerating - a.distancerating;
+          }
+          return a.selectivityrating > b.selectivityrating ? -1 : 1;
         }
       );
       // then sort by distance
     } else if (desc_answers_in_db[5].answer == "Coût") {
-      
       resultForResponse.courses.sort(
         // (a, b) => parseInt(b.courseId.cost) - parseInt(a.courseId.cost)
         // check rating criteria and distance criteria
         (a, b) => {
-          
           a.courseId.cost = parseInt(a.courseId.cost);
           b.courseId.cost = parseInt(b.courseId.cost);
           a.distancerating = parseInt(a.distancerating);
           b.distancerating = parseInt(b.distancerating);
-          
+
           if (a.courseId.cost === b.courseId.cost) {
             return b.distancerating - a.distancerating;
           }
@@ -300,12 +297,11 @@ exports.create = async (req, res) => {
 
         // check rating criteria and after rating check distance criteria
         (a, b) => {
-          
           a.courseId.languagestar = parseInt(a.courseId.languagestar);
           b.courseId.languagestar = parseInt(b.courseId.languagestar);
           a.distancerating = parseInt(a.distancerating);
           b.distancerating = parseInt(b.distancerating);
-          
+
           if (a.courseId.languagestar === b.courseId.languagestar) {
             return b.distancerating - a.distancerating;
           }
@@ -313,17 +309,15 @@ exports.create = async (req, res) => {
         }
       );
     } else if (desc_answers_in_db[5].answer == "Durée") {
-      // resultForResponse.courses.sort(
-      //   (a, b) => parseInt(b.courseId.duration) - parseInt(a.courseId.duration)
-
+      resultForResponse.courses.sort(
+        // (a, b) => parseInt(b.courseId.duration) - parseInt(a.courseId.duration)
         // check rating criteria and after rating check distance criteria
         (a, b) => {
-          
           a.courseId.duration = parseInt(a.courseId.duration);
           b.courseId.duration = parseInt(b.courseId.duration);
           a.distancerating = parseInt(a.distancerating);
           b.distancerating = parseInt(b.distancerating);
-          
+
           if (a.courseId.duration === b.courseId.duration) {
             return b.distancerating - a.distancerating;
           }
