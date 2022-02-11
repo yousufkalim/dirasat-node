@@ -18,11 +18,13 @@ exports.getAll = async (req, res) => {
 exports.postAll = async (req, res) => {
   try {
     // Reading All rows from Excel file and pushing in data array
+    // await Institute.deleteMany();
     await xlsxFile(req.file.path).then(async (rows) => {
-      let institute = rows.map((item) => item[0]);
+      let newRows = rows.splice(1);
+      let institute = newRows.map((item) => item[0]);
       institute = [...new Set(institute)]; //Filtering duplicate school names
       const promises = institute.map((item) => {
-        const newinstitute = new Institute({ name: item, type: "College" });
+        const newinstitute = new Institute({ name: item, type: "School" });
         return newinstitute.save();
       });
       await Promise.all(promises); //saving all Institute at once

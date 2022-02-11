@@ -257,7 +257,6 @@ exports.create = async (req, res) => {
     // console.log("desc_answers_in_db[5].answer", desc_answers_in_db[5].answer);
     // sort the courses on the base of last descrAnswer
     if (desc_answers_in_db[5].answer == "Prestige") {
-      console.log("kkkkiii");
       resultForResponse.courses.sort(
         // (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
         // check rating criteria and distance criteria
@@ -343,8 +342,6 @@ exports.create = async (req, res) => {
           },
         });
 
-        // console.log("CPGE courseindex", i, d.distance);
-        console.log("CPGE course", item, d.distance);
         CPGE.push(item);
       }
       if (item.courseId.type_of_course === "BTS") {
@@ -355,18 +352,7 @@ exports.create = async (req, res) => {
             lon: item.courseId.gps_coordinates.lng,
           },
         });
-        // console.log(
-        //   "bts cordniates user lat long",
-        //   user.address.lat,
-        //   user.address.lng
-        // );
-        // console.log(
-        //   "bts cordniates course lat long",
-        //   item.courseId.gps_coordinates.lat,
-        //   item.courseId.gps_coordinates.lng
-        // );
-        // console.log("BTS courseindex", i, d.distance);
-        console.log("BTS course", item, d.distance);
+
         BTS.push(item);
       }
       if (item.courseId.type_of_course === "BUT") {
@@ -377,8 +363,7 @@ exports.create = async (req, res) => {
             lon: item.courseId.gps_coordinates.lng,
           },
         });
-        // console.log("BUT courseindex", i, d.distance);
-        // console.log("BUT course", item, d.distance);
+
         BUT.push(item);
       }
       if (item.courseId.type_of_course === "Ecole Post-Bac") {
@@ -389,11 +374,7 @@ exports.create = async (req, res) => {
             lon: item.courseId.gps_coordinates.lng,
           },
         });
-        console.log(
-          "desc_answers_in_db[5].answer",
-          desc_answers_in_db[5].answer
-        );
-        console.log("Ecole Post-Bac course", item, d.distance, item.courseId);
+
         Ecole.push(item);
       }
       if (item.courseId.type_of_course === "Licence") {
@@ -404,8 +385,7 @@ exports.create = async (req, res) => {
             lon: item.courseId.gps_coordinates.lng,
           },
         });
-        // console.log("Licence courseindex", i, d.distance);
-        console.log("Licence course", item, d.distance);
+
         Licence.push(item);
       }
     });
