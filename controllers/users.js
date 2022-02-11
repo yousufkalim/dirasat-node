@@ -1,6 +1,7 @@
 const Users = require("../models/users");
 const Questions = require("../models/questions");
 const Answers = require("../models/answers");
+const Contact = require("../models/contact");
 const nodemailer = require("nodemailer");
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -177,6 +178,24 @@ exports.inviteUser = async (req, res) => {
         return res.status(200).send({ msg: "Ok" });
       }
     });
+  } catch (error) {
+    console.log("Error ----> ", error);
+    res.status(500).send("Something Failed");
+  }
+};
+
+exports.contactUs = async (req, res) => {
+  try {
+    const { name, email, message, description } = req.body;
+    // Creating Admin Object
+    const contact = new Contact({
+      name,
+      email,
+      message,
+      description,
+    });
+    await contact.save();
+    res.status(200).send({ msg: "Success" });
   } catch (error) {
     console.log("Error ----> ", error);
     res.status(500).send("Something Failed");

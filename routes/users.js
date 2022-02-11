@@ -5,6 +5,7 @@ const {
   updateUser,
   inviteUser,
   verifyUser,
+  contactUs,
 } = require("../controllers/users");
 const { validateUser, isValidated } = require("../middleware/validators");
 
@@ -15,6 +16,7 @@ router.post("/create", validateUser, isValidated, createUser); //Create a User
 router.post("/verify", verifyUser); //Verify a User
 router.post("/update", updateUser); //Create a User
 router.post("/invite", inviteUser); //Create a User
+router.post("/contact", contactUs); //Create a User
 
 // Export
 module.exports = router;
