@@ -194,6 +194,19 @@ exports.contactUs = async (req, res) => {
       message,
       description,
     });
+    var mailOptions = {
+      from: email,
+      to: process.env.EMAIL,
+      subject: "Nouveau contact Orientator",
+      html: `<div><h4> </h4><p>Prénom et nom : ${name}</p><p>Email: ${email}</p><p>Message : ${message}</p><p>Votre Message : ${description}</p></div>`,
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        return res.status(200).send({ msg: "Ok" });
+      }
+    });
     await contact.save();
     res.status(200).send({ msg: "Success" });
   } catch (error) {
