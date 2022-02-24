@@ -40,7 +40,6 @@ exports.deleteUser = async (req, res) => {
     //Deleting User From DB
     const user = await Users.findByIdAndRemove(req.params._id);
     if (!user) return res.status(404).send("User not Found");
-
     res.status(200).send("User Deleted");
   } catch (error) {
     console.log("Error ----> ", error);

@@ -8,7 +8,8 @@ exports.getResults = async (req, res) => {
 
     //Fetching results from database in descending order according to date
     const results = await Results.find()
-      .populate("user")
+      .select("-courses")
+      .populate(["user", "desc_answers"])
       .sort("-createdAt")
       .skip(pageNumber * pageSize)
       .limit(parseInt(pageSize));
@@ -26,9 +27,9 @@ exports.getResults = async (req, res) => {
 exports.getOneResult = async (req, res) => {
   try {
     //Fetching Result From DB
-    const result = await Results.findById(req.params._id).populate(
-      "courses.courseId"
-    );
+    const result = await Results.findById(req.params._id)
+      .select("-desc_answers")
+      .populate("courses.courseId");
     if (!result) return res.status(404).send("Result not Found");
 
     res.status(200).send({ msg: "Result Fetched", result });
@@ -42,9 +43,9 @@ exports.getOneResult = async (req, res) => {
 exports.getUserResult = async (req, res) => {
   try {
     //Fetching User Results From DB
-    const results = await Results.find({ user: req.params._id }).populate(
-      "user"
-    );
+    const results = await Results.find({ user: req.params._id })
+      .select("-courses -desc_answers")
+      .populate("user");
     if (!results) return res.status(404).send("User Result not Found");
 
     res.status(200).send({ msg: "Results Fetched", result: results });
