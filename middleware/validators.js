@@ -30,12 +30,6 @@ exports.validateUser = [
   check("phone", "Phone is required.").notEmpty().trim(),
   check("newsletter", "Newsletter is required.").isBoolean(),
   check("institute", "Institute is required.").notEmpty().trim(),
-  check("address", "Address is required.").notEmpty(),
-  check("address.lat", "Latitude is required.").notEmpty(),
-  check("address.lng", "Longitude is required.").notEmpty(),
-  check("address.city", "City is required.").notEmpty(),
-  check("address.postal_code", "Postal Code is required.").notEmpty(),
-  check("address.label", "Address Label is required.").notEmpty(),
   check("date_of_birth", "Date Of Birth is required.").notEmpty().trim(),
 ];
 

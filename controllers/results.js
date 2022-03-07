@@ -19,6 +19,7 @@ exports.create = async (req, res) => {
     if (!user) return res.status(404).send("User Not Found");
 
     const answer = await Answers.findById(last_answer).populate("job"); //Finding answer for Job and Domain Id's
+
     const domain = await Domains.findById(answer.domain); //Finding Domain name for result
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers },
@@ -225,10 +226,10 @@ exports.create = async (req, res) => {
       selectivityrating: item.selectivityrating ? item.selectivityrating : "",
       distancerating: item.distanceRatingIs,
     }));
-
+    console.log("last_answer answe2r", answer.answer);
     const result = new Results({
       user: user_id,
-      last_answer,
+      last_answer: answer.answer,
       example_of_job: answer.job.example_of_job,
       type_of_job: answer.job.type_of_job,
       domain: domain.name,

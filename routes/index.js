@@ -13,6 +13,7 @@ router.use("/users", require("./users"));
 router.use("/jobs", require("./jobs"));
 router.use("/admin", require("./admin"));
 router.use("/", require("./blog"));
+router.use("/images", require("./images"));
 
 // Export
 module.exports = router;

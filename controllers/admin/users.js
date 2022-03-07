@@ -46,3 +46,47 @@ exports.deleteUser = async (req, res) => {
     res.status(500).send("Something Failed");
   }
 };
+
+// Get One User By id
+exports.getAllUsersData = async (req, res) => {
+  console.log("get users");
+  try {
+    //Fetching User From DB
+    const users = await Users.aggregate([
+      {
+        $unwind: {
+          path: "$results",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "results",
+          pipeline: [
+            {
+              $project: {
+                courses: 0,
+                example_of_job: 0,
+              },
+            },
+          ],
+          localField: "results",
+          foreignField: "_id",
+          as: "userResult",
+        },
+      },
+      {
+        $unwind: {
+          path: "$userResult",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+    ]);
+    if (!users) return res.status(404).send("User not Found");
+
+    res.status(200).send({ msg: "Users Fetched", users });
+  } catch (error) {
+    console.log("Error ----> ", error);
+    res.status(500).send("Something Failed");
+  }
+};
