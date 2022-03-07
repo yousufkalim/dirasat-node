@@ -3,6 +3,7 @@ const Admins = require("../../models/blogadmin");
 
 exports.createBlog = async (req, res) => {
   const admin = req.admin._id;
+  console.log("adminadmin", admin);
   try {
     const user = await Admins.findById(admin);
     if (!user) return res.status(404).send("User does not found");
@@ -26,7 +27,6 @@ exports.createBlog = async (req, res) => {
 exports.getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find().populate("blog_author");
-    console.log("blogs", blogs);
     if (!blogs) res.status(404).send("Blog Not Found");
     blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.send(blogs);
@@ -69,7 +69,7 @@ exports.updateBlog = async (req, res) => {
     if (!blog) return res.status(404).send("blog Not Found");
     res.send(blog);
   } catch (error) {
-    console.log("Error ---> ", error);
+    // console.log("Error ---> ", error);
     res.status(500).send(error);
   }
 };

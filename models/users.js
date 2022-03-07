@@ -38,23 +38,18 @@ const userSchema = new Schema(
     address: {
       lat: {
         type: String,
-        required: true,
       },
       lng: {
         type: String,
-        required: true,
       },
       label: {
         type: String,
-        required: true,
       },
       city: {
         type: String,
-        required: true,
       },
       postal_code: {
         type: String,
-        required: true,
       },
     },
     otp: { type: String },
