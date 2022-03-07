@@ -26,7 +26,6 @@ exports.getOneUser = async (req, res) => {
     //Fetching User From DB
     const user = await Users.findById(req.params._id);
     if (!user) return res.status(404).send("User not Found");
-
     res.status(200).send({ msg: "User Fetched", user });
   } catch (error) {
     console.log("Error ----> ", error);

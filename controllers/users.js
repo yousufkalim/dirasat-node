@@ -40,76 +40,76 @@ exports.createUser = async (req, res) => {
     const emailInDb = await Users.findOne({ email });
 
     if (emailInDb) {
-      // let newUser = {
-      //   email,
-      //   first_name,
-      //   last_name,
-      //   education_level,
-      //   phone,
-      //   contact_me,
-      //   newsletter,
-      //   institute,
-      //   address,
-      //   date_of_birth: new Date(date_of_birth),
-      //   otp,
-      // };
-      // // sending otp to number
-      // // console.log("phone is", `+92${phone.substring(1)}1`);
-      // twilio.messages
-      //   .create({
-      //     body: `Votre code Orientator est ${otp}`,
-      //     from: process.env.TWILIO_NUMBER,
-      //     to: `+33${phone.substring(1)}`,
-      //   })
-      //   .then(async () => {
-      //     console.log("OTP sent");
-      //     // save user
-      //   })
-      //   .catch((e) => {
-      //     console.error(e.code, e.message);
-      //     return res.send({ status: 500, message: e.message });
-      //   });
-      // let updatedUser = await Users.findOneAndUpdate(
-      //   { _id: emailInDb._id },
-      //   {
-      //     $set: newUser,
-      //   },
-      //   {
-      //     new: true,
-      //   }
-      // );
-      // return res.json({ status: 200, message: "ok" });
+      let newUser = {
+        email,
+        first_name,
+        last_name,
+        education_level,
+        phone,
+        contact_me,
+        newsletter,
+        institute,
+        address,
+        date_of_birth: new Date(date_of_birth),
+        otp,
+      };
+      // sending otp to number
+      // console.log("phone is", `+92${phone.substring(1)}1`);
+      twilio.messages
+        .create({
+          body: `Votre code Orientator est ${otp}`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+33${phone.substring(1)}`,
+        })
+        .then(async () => {
+          console.log("OTP sent");
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
+      let updatedUser = await Users.findOneAndUpdate(
+        { _id: emailInDb._id },
+        {
+          $set: newUser,
+        },
+        {
+          new: true,
+        }
+      );
+      return res.json({ status: 200, message: "ok" });
     } else {
-      // const user = new Users({
-      //   email,
-      //   first_name,
-      //   last_name,
-      //   education_level,
-      //   phone,
-      //   contact_me,
-      //   newsletter,
-      //   institute,
-      //   address,
-      //   date_of_birth: new Date(date_of_birth),
-      //   otp,
-      // });
-      // // sending otp to number
-      // twilio.messages
-      //   .create({
-      //     body: `Votre code Orientator est ${otp}`,
-      //     from: process.env.TWILIO_NUMBER,
-      //     to: `+33${phone.substring(1)}`,
-      //   })
-      //   .then(async () => {
-      //     console.log("OTP sent");
-      //     // save user
-      //   })
-      //   .catch((e) => {
-      //     console.error(e.code, e.message);
-      //     return res.send({ status: 500, message: e.message });
-      //   });
-      // const savedUser = await user.save();
-      // return res.status(200).send({ msg: "Ok" });
+      const user = new Users({
+        email,
+        first_name,
+        last_name,
+        education_level,
+        phone,
+        contact_me,
+        newsletter,
+        institute,
+        address,
+        date_of_birth: new Date(date_of_birth),
+        otp,
+      });
+      // sending otp to number
+      twilio.messages
+        .create({
+          body: `Votre code Orientator est ${otp}`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+33${phone.substring(1)}`,
+        })
+        .then(async () => {
+          console.log("OTP sent");
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
+      const savedUser = await user.save();
+      return res.status(200).send({ msg: "Ok" });
     }
   } catch (error) {
     console.log("Error ----> ", error);
