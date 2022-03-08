@@ -45,7 +45,7 @@ exports.create = async (req, res) => {
     console.log("address333", user);
     courses = courses.map((item) => {
       if (item.zipcode) {
-        if (user.address) {
+        if (user.address?.postal_code) {
           if (
             item._doc.zipcode.substring(0, 2) ==
             user.address.postal_code.substring(0, 2)
@@ -195,7 +195,7 @@ exports.create = async (req, res) => {
     // for distance Rating
     filteredCourses = filteredCourses.map((item) => {
       if (item.gps_coordinates) {
-        if (user.address) {
+        if (user.address?.postal_code) {
           let result = geoLib.distance({
             p1: { lat: user.address.lat, lon: user.address.lng },
             p2: {
