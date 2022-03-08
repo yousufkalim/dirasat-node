@@ -34,82 +34,168 @@ exports.createUser = async (req, res) => {
       newsletter,
       institute,
       address,
+      customenewAddress,
+      country,
+      customeAddress,
     } = req.body;
-    console.log("create", req.body);
 
-    const emailInDb = await Users.findOne({ email });
+    if (req.body.address) {
+      console.log("only for france", req.body);
+      const emailInDb = await Users.findOne({ email });
 
-    if (emailInDb) {
-      let newUser = {
-        email,
-        first_name,
-        last_name,
-        education_level,
-        phone,
-        contact_me,
-        newsletter,
-        institute,
-        address,
-        date_of_birth: new Date(date_of_birth),
-        otp,
-      };
-      // sending otp to number
-      // console.log("phone is", `+92${phone.substring(1)}1`);
-      twilio.messages
-        .create({
-          body: `Votre code Orientator est ${otp}`,
-          from: process.env.TWILIO_NUMBER,
-          to: `+33${phone.substring(1)}`,
-        })
-        .then(async () => {
-          console.log("OTP sent");
-          // save user
-        })
-        .catch((e) => {
-          console.error(e.code, e.message);
-          return res.send({ status: 500, message: e.message });
+      if (emailInDb) {
+        let newUser = {
+          email,
+          first_name,
+          last_name,
+          education_level,
+          phone,
+          contact_me,
+          newsletter,
+          institute,
+          address,
+          customenewAddress,
+          date_of_birth: new Date(date_of_birth),
+          otp,
+        };
+        // sending otp to number
+        // console.log("phone is", `+92${phone.substring(1)}1`);
+
+        twilio.messages
+          .create({
+            body: `Votre code Orientator est ${otp}`,
+            from: process.env.TWILIO_NUMBER,
+            to: `+33${phone.substring(1)}`,
+          })
+          .then(async () => {
+            console.log("OTP sent");
+            // save user
+          })
+          .catch((e) => {
+            console.error(e.code, e.message);
+            return res.send({ status: 500, message: e.message });
+          });
+        let updatedUser = await Users.findOneAndUpdate(
+          { _id: emailInDb._id },
+          {
+            $set: newUser,
+          },
+          {
+            new: true,
+          }
+        );
+        return res.json({ status: 200, message: "ok" });
+      } else {
+        const user = new Users({
+          email,
+          first_name,
+          last_name,
+          education_level,
+          phone,
+          contact_me,
+          newsletter,
+          institute,
+          address,
+          customenewAddress,
+          date_of_birth: new Date(date_of_birth),
+          otp,
         });
-      let updatedUser = await Users.findOneAndUpdate(
-        { _id: emailInDb._id },
-        {
-          $set: newUser,
-        },
-        {
-          new: true,
-        }
-      );
-      return res.json({ status: 200, message: "ok" });
+        // sending otp to number
+        twilio.messages
+          .create({
+            body: `Votre code Orientator est ${otp}`,
+            from: process.env.TWILIO_NUMBER,
+            to: `+33${phone.substring(1)}`,
+          })
+          .then(async () => {
+            console.log("OTP sent");
+            // save user
+          })
+          .catch((e) => {
+            console.error(e.code, e.message);
+            return res.send({ status: 500, message: e.message });
+          });
+        const savedUser = await user.save();
+        return res.status(200).send({ msg: "Ok" });
+      }
     } else {
-      const user = new Users({
-        email,
-        first_name,
-        last_name,
-        education_level,
-        phone,
-        contact_me,
-        newsletter,
-        institute,
-        address,
-        date_of_birth: new Date(date_of_birth),
-        otp,
-      });
-      // sending otp to number
-      twilio.messages
-        .create({
-          body: `Votre code Orientator est ${otp}`,
-          from: process.env.TWILIO_NUMBER,
-          to: `+33${phone.substring(1)}`,
-        })
-        .then(async () => {
-          console.log("OTP sent");
-          // save user
-        })
-        .catch((e) => {
-          console.error(e.code, e.message);
-          return res.send({ status: 500, message: e.message });
+      console.log("for other", req.body);
+      const emailInDb = await Users.findOne({ email });
+
+      if (emailInDb) {
+        let newUser = {
+          email,
+          first_name,
+          last_name,
+          education_level,
+          phone,
+          contact_me,
+          newsletter,
+          institute,
+          address,
+          customenewAddress,
+          date_of_birth: new Date(date_of_birth),
+          otp,
+        };
+        // sending otp to number
+        // console.log("phone is", `+92${phone.substring(1)}1`);
+
+        var mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Votre code de vérification Orientator.",
+          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Orientator est :${otp}  </p><p>L'équipe Orientator</p></div>`,
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("OTP sent");
+          }
         });
-      const savedUser = await user.save();
-      return res.status(200).send({ msg: "Ok" });
+
+        let updatedUser = await Users.findOneAndUpdate(
+          { _id: emailInDb._id },
+          {
+            $set: newUser,
+          },
+          {
+            new: true,
+          }
+        );
+        return res.json({ status: 200, message: "ok" });
+      } else {
+        const user = new Users({
+          email,
+          first_name,
+          last_name,
+          education_level,
+          phone,
+          contact_me,
+          newsletter,
+          institute,
+          address,
+          customenewAddress,
+          date_of_birth: new Date(date_of_birth),
+          otp,
+        });
+        // sending otp to number
+        var mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Votre code de vérification Orientator.",
+          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Orientator est :${otp}  </p><p>L'équipe Orientator</p></div>`,
+        };
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("OTP sent");
+          }
+        });
+        const savedUser = await user.save();
+        return res.status(200).send({ msg: "Ok" });
+      }
     }
   } catch (error) {
     console.log("Error ----> ", error);
