@@ -42,38 +42,13 @@ exports.create = async (req, res) => {
       `${first_disc_ans}${third_disc_ans}${second_disc_ans}`
     );
     // get star rating from zipcode
-
+    console.log("address333", user);
     courses = courses.map((item) => {
       if (item.zipcode) {
-        if (
-          item._doc.zipcode.substring(0, 2) ==
-          user.address.postal_code.substring(0, 2)
-        ) {
-          if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
-            return {
-              ...item._doc,
-              selectivityrating: "4",
-            };
-          }
-          if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
-            return {
-              ...item._doc,
-              selectivityrating: "2",
-            };
-          }
-          return {
-            ...item._doc,
-            selectivityrating: item._doc.selectivity
-              ? item._doc.selectivity
-              : "",
-          };
-        } else {
+        if (user.address) {
           if (
-            // checkgroup
-            checkGroup(
-              item._doc.zipcode.substring(0, 2),
-              user.address.postal_code.substring(0, 2)
-            )
+            item._doc.zipcode.substring(0, 2) ==
+            user.address.postal_code.substring(0, 2)
           ) {
             if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
               return {
@@ -94,25 +69,57 @@ exports.create = async (req, res) => {
                 : "",
             };
           } else {
-            if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+            if (
+              // checkgroup
+              checkGroup(
+                item._doc.zipcode.substring(0, 2),
+                user.address.postal_code.substring(0, 2)
+              )
+            ) {
+              if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+                return {
+                  ...item._doc,
+                  selectivityrating: "4",
+                };
+              }
+              if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+                return {
+                  ...item._doc,
+                  selectivityrating: "2",
+                };
+              }
               return {
                 ...item._doc,
-                selectivityrating: "3",
+                selectivityrating: item._doc.selectivity
+                  ? item._doc.selectivity
+                  : "",
               };
-            }
-            if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+            } else {
+              if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
+                return {
+                  ...item._doc,
+                  selectivityrating: "3",
+                };
+              }
+              if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
+                return {
+                  ...item._doc,
+                  selectivityrating: "1",
+                };
+              }
               return {
                 ...item._doc,
-                selectivityrating: "1",
+                selectivityrating: item._doc.selectivity
+                  ? item._doc.selectivity
+                  : "",
               };
             }
-            return {
-              ...item._doc,
-              selectivityrating: item._doc.selectivity
-                ? item._doc.selectivity
-                : "",
-            };
           }
+        } else {
+          return {
+            ...item._doc,
+            selectivityrating: "1",
+          };
         }
       } else {
         return item._doc;
@@ -188,29 +195,36 @@ exports.create = async (req, res) => {
     // for distance Rating
     filteredCourses = filteredCourses.map((item) => {
       if (item.gps_coordinates) {
-        let result = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.gps_coordinates.lat,
-            lon: item.gps_coordinates.lng,
-          },
-        });
-        if (result.distance >= 0 && result.distance <= 30) {
-          distanceRatingIs = 5;
-        } else if (result.distance >= 31 && result.distance <= 60) {
-          distanceRatingIs = 4;
-        } else if (result.distance >= 61 && result.distance <= 200) {
-          distanceRatingIs = 3;
-        } else if (result.distance >= 201 && result.distance <= 400) {
-          distanceRatingIs = 2;
+        if (user.address) {
+          let result = geoLib.distance({
+            p1: { lat: user.address.lat, lon: user.address.lng },
+            p2: {
+              lat: item.gps_coordinates.lat,
+              lon: item.gps_coordinates.lng,
+            },
+          });
+          if (result.distance >= 0 && result.distance <= 30) {
+            distanceRatingIs = 5;
+          } else if (result.distance >= 31 && result.distance <= 60) {
+            distanceRatingIs = 4;
+          } else if (result.distance >= 61 && result.distance <= 200) {
+            distanceRatingIs = 3;
+          } else if (result.distance >= 201 && result.distance <= 400) {
+            distanceRatingIs = 2;
+          } else {
+            distanceRatingIs = 1;
+          }
+          return {
+            ...item,
+            distanceRatingIs,
+            distance: result.distance,
+          };
         } else {
-          distanceRatingIs = 1;
+          return {
+            ...item,
+            distanceRatingIs: 1,
+          };
         }
-        return {
-          ...item,
-          distanceRatingIs,
-          distance: result.distance,
-        };
       } else {
         return {
           ...item,
@@ -335,58 +349,18 @@ exports.create = async (req, res) => {
 
     resultForResponse.courses.forEach((item, i) => {
       if (item.courseId.type_of_course === "CPGE") {
-        let d = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.courseId.gps_coordinates.lat,
-            lon: item.courseId.gps_coordinates.lng,
-          },
-        });
-
         CPGE.push(item);
       }
       if (item.courseId.type_of_course === "BTS") {
-        let d = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.courseId.gps_coordinates.lat,
-            lon: item.courseId.gps_coordinates.lng,
-          },
-        });
-
         BTS.push(item);
       }
       if (item.courseId.type_of_course === "BUT") {
-        let d = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.courseId.gps_coordinates.lat,
-            lon: item.courseId.gps_coordinates.lng,
-          },
-        });
-
         BUT.push(item);
       }
       if (item.courseId.type_of_course === "Ecole Post-Bac") {
-        let d = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.courseId.gps_coordinates.lat,
-            lon: item.courseId.gps_coordinates.lng,
-          },
-        });
-
         Ecole.push(item);
       }
       if (item.courseId.type_of_course === "Licence") {
-        let d = geoLib.distance({
-          p1: { lat: user.address.lat, lon: user.address.lng },
-          p2: {
-            lat: item.courseId.gps_coordinates.lat,
-            lon: item.courseId.gps_coordinates.lng,
-          },
-        });
-
         Licence.push(item);
       }
     });

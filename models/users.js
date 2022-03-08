@@ -35,6 +35,15 @@ const userSchema = new Schema(
       required: true,
       ref: "Institute",
     },
+    country: {
+      type: String,
+    },
+    customeAddress: {
+      type: String,
+    },
+    customenewAddress: {
+      type: String,
+    },
     address: {
       lat: {
         type: String,
