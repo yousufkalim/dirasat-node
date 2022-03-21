@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
+    "start": "nodemon",
     "deploy": "sudo chmod 644 .git/index && git pull origin main && npm install && sudo pm2 restart 1"
   },
   "repository": {
