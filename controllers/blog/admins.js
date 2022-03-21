@@ -2,7 +2,7 @@
 const Admins = require("../../models/blogadmin");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const tokenSecret = process.env.TOKEN_SECRET;
+const tokenSecret = process.env.SESSION_SECRET;
 const bcryptSalt = process.env.BCRYPT_SALT || 10;
 
 exports.register = async (req, res) => {
