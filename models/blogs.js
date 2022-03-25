@@ -10,6 +10,10 @@ const blogSchema = new Schema(
       type: String,
       required: true,
     },
+    yt_link: {
+      type: String,
+      required: false,
+    },
     blog_author: {
       type: Schema.Types.ObjectId,
       required: true,
