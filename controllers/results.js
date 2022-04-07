@@ -11,7 +11,6 @@ let checkgroup = true;
 // Create a Result
 exports.create = async (req, res) => {
   try {
-    // console.log("req.body", req.body);
     const { last_answer, user_id, disc_answers } = req.body;
     const course_types = ["BTS", "BUT", "CPGE", "Ecole Post-Bac", "Licence"];
 
@@ -42,7 +41,6 @@ exports.create = async (req, res) => {
       `${first_disc_ans}${third_disc_ans}${second_disc_ans}`
     );
     // get star rating from zipcode
-    console.log("address333", user);
     courses = courses.map((item) => {
       if (item.zipcode) {
         if (user.address?.postal_code) {
@@ -240,7 +238,7 @@ exports.create = async (req, res) => {
       selectivityrating: item.selectivityrating ? item.selectivityrating : "",
       distancerating: item.distanceRatingIs,
     }));
-    console.log("last_answer answe2r", answer.answer);
+
     const result = new Results({
       user: user_id,
       last_answer: answer.answer,
@@ -345,7 +343,6 @@ exports.create = async (req, res) => {
     }
 
     // seperate each type of course for sorting purpose
-    // console.log("resultForResponse1111", resultForResponse);
 
     resultForResponse.courses.forEach((item, i) => {
       if (item.courseId.type_of_course === "CPGE") {

@@ -4,7 +4,7 @@ const Admins = require("../../models/blogadmin");
 
 exports.createBlog = async (req, res) => {
   const admin = req.admin._id;
-  console.log("adminadmin", admin);
+
   try {
     const user = await Admins.findById(admin);
     if (!user) return res.status(404).send("User does not found");
@@ -26,14 +26,13 @@ exports.createBlog = async (req, res) => {
 };
 exports.addVideo = async (req, res) => {
   const admin = req.admin._id;
-  console.log("adminadmin video2222", admin);
+
   try {
     const user = await Admins.findById(admin);
     if (!user) return res.status(404).send("User does not found");
     const video = new Video({
       ...req.body,
     });
-    console.log("videoisss",video) 
 
     await video.save();
     res.send(video);
@@ -47,9 +46,8 @@ exports.addVideo = async (req, res) => {
 };
 exports.getAllVideos = async (req, res) => {
   try {
-    console.log("videos os")
     const videos = await Video.find();
-    
+
     if (!videos) res.status(404).send("videos Not Found");
     videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     res.send(videos);
