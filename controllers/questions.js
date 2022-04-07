@@ -6,7 +6,6 @@ const fs = require("fs");
 exports.getAll = async (req, res) => {
   try {
     const questions = await Questions.find(); //Find all questions in DB
-
     res.status(200).send({ msg: "Ok", questions });
   } catch (error) {
     console.log("Error ----> ", error);

@@ -8,6 +8,7 @@ const router = require("express").Router();
 // admin
 router.use("/admins", require("./admins"));
 router.use("/blogs", require("./blogs"));
+router.use("/videos", require("./videos"));
 
 // Export
 module.exports = router;
