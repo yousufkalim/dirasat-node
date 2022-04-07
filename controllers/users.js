@@ -61,7 +61,7 @@ exports.createUser = async (req, res) => {
 
         twilio.messages
           .create({
-            body: `Votre code Orientator est ${otp}`,
+            body: `Votre code Dirasat est ${otp}`,
             from: process.env.TWILIO_NUMBER,
             to: `+33${phone.substring(1)}`,
           })
@@ -101,7 +101,7 @@ exports.createUser = async (req, res) => {
         // sending otp to number
         twilio.messages
           .create({
-            body: `Votre code Orientator est ${otp}`,
+            body: `Votre code Dirasat est ${otp}`,
             from: process.env.TWILIO_NUMBER,
             to: `+33${phone.substring(1)}`,
           })
@@ -139,8 +139,8 @@ exports.createUser = async (req, res) => {
         var mailOptions = {
           from: process.env.EMAIL,
           to: email,
-          subject: "Votre code de vérification Orientator.",
-          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Orientator est :${otp}  </p><p>L'équipe Orientator</p></div>`,
+          subject: "Votre code de vérification Dirasat.",
+          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`,
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
@@ -179,8 +179,8 @@ exports.createUser = async (req, res) => {
         var mailOptions = {
           from: process.env.EMAIL,
           to: email,
-          subject: "Votre code de vérification Orientator.",
-          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Orientator est :${otp}  </p><p>L'équipe Orientator</p></div>`,
+          subject: "Votre code de vérification Dirasat.",
+          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`,
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
@@ -248,8 +248,8 @@ exports.inviteUser = async (req, res) => {
     var mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Invitation sur Orientator",
-      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Orientator pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.orientator.com/" >https://www.orientator.com/</a></p><p>L'équipe Orientator</p></div>`,
+      subject: "Invitation sur Dirasat",
+      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.orientator.com/" >https://www.orientator.com/</a></p><p>L'équipe Dirasat</p></div>`,
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {

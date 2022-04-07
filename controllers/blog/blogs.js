@@ -76,7 +76,7 @@ exports.getOneBlog = async (req, res) => {
         path: "user_id",
       },
     });
-    if (!blog) res.status(404).send("Not Found orientator");
+    if (!blog) res.status(404).send("Not Found Dirasat");
     res.send(blog);
   } catch (error) {
     res.status(500).send(error);
