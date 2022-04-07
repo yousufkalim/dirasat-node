@@ -1,9 +1,10 @@
 const Blog = require("../../models/blogs");
+const Video = require("../../models/videos");
 const Admins = require("../../models/blogadmin");
 
 exports.createBlog = async (req, res) => {
   const admin = req.admin._id;
-  console.log("adminadmin", admin);
+
   try {
     const user = await Admins.findById(admin);
     if (!user) return res.status(404).send("User does not found");
@@ -23,6 +24,37 @@ exports.createBlog = async (req, res) => {
     res.status(500).send(error);
   }
 };
+exports.addVideo = async (req, res) => {
+  const admin = req.admin._id;
+
+  try {
+    const user = await Admins.findById(admin);
+    if (!user) return res.status(404).send("User does not found");
+    const video = new Video({
+      ...req.body,
+    });
+
+    await video.save();
+    res.send(video);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+  try {
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+exports.getAllVideos = async (req, res) => {
+  try {
+    const videos = await Video.find();
+
+    if (!videos) res.status(404).send("videos Not Found");
+    videos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.send(videos);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 exports.getAllBlogs = async (req, res) => {
   try {
@@ -34,6 +66,7 @@ exports.getAllBlogs = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
 exports.getOneBlog = async (req, res) => {
   const _id = req.params.id;
   try {

@@ -40,7 +40,6 @@ exports.createUser = async (req, res) => {
     } = req.body;
 
     if (req.body.address) {
-      console.log("only for france", req.body);
       const emailInDb = await Users.findOne({ email });
 
       if (emailInDb) {
@@ -59,7 +58,6 @@ exports.createUser = async (req, res) => {
           otp,
         };
         // sending otp to number
-        // console.log("phone is", `+92${phone.substring(1)}1`);
 
         twilio.messages
           .create({
@@ -119,7 +117,6 @@ exports.createUser = async (req, res) => {
         return res.status(200).send({ msg: "Ok" });
       }
     } else {
-      console.log("for other", req.body);
       const emailInDb = await Users.findOne({ email });
 
       if (emailInDb) {
@@ -138,7 +135,6 @@ exports.createUser = async (req, res) => {
           otp,
         };
         // sending otp to number
-        // console.log("phone is", `+92${phone.substring(1)}1`);
 
         var mailOptions = {
           from: process.env.EMAIL,
