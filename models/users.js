@@ -4,71 +4,63 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: true,
+      required: true
     },
     first_name: {
       type: String,
-      required: true,
+      required: true
     },
     last_name: {
       type: String,
-      required: true,
+      required: true
     },
     date_of_birth: {
       type: Date,
-      required: true,
+      required: true
     },
-    education_level: {
+    class_list: {
       type: String,
-      required: true,
+      required: true
     },
     phone: {
       type: String,
-      required: true,
+      required: true
     },
-    newsletter: {
-      type: Boolean,
-      defauult: false,
-    },
-    institute: {
+    Bac_Serie: {
       type: String,
-      required: true,
-      ref: "Institute",
+      required: true
     },
-    country: {
-      type: String,
+    wilaya: {
+      type: Object,
+      required: true
     },
-    customeAddress: {
-      type: String,
+    school_city: {
+      type: String
     },
-    customenewAddress: {
-      type: String,
+    school_name: {
+      type: String
     },
-    address: {
-      lat: {
-        type: String,
-      },
-      lng: {
-        type: String,
-      },
-      label: {
-        type: String,
-      },
-      city: {
-        type: String,
-      },
-      postal_code: {
-        type: String,
-      },
+    language: {
+      type: String
     },
+    accept_condition: {
+      type: String
+    },
+    level1: {
+      type: String
+    },
+    level2: {
+      type: String
+    },
+
     otp: { type: String },
     results: [
       {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "Result",
-      },
-    ],
+        ref: "Result"
+      }
+    ]
   },
   { timestamps: true }
 );

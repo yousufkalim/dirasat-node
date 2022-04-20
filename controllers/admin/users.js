@@ -1,4 +1,5 @@
 const Users = require("../../models/users");
+const Answers = require("../../models/answers");
 
 // Get All Users
 exports.getAllUsers = async (req, res) => {
@@ -51,9 +52,9 @@ exports.getAllUsersData = async (req, res) => {
   console.log("get users");
   try {
     // Fetching User From DB
-    const users = await Users.find()
+    const users = await Users.find();
     if (!users) return res.status(404).send("User not Found");
-    console.log("88888888888",users.length);
+    console.log("88888888888", users.length);
 
     res.status(200).send({ msg: "Users Fetched", users });
   } catch (error) {
@@ -66,38 +67,78 @@ exports.getAllUsersDataWithResult = async (req, res) => {
   console.log("get users");
   try {
     // Fetching User From DB
-    const users = await Users.aggregate([
-      {
-        $unwind: {
-          path: "$results",
-          preserveNullAndEmptyArrays: true,
+    const users = await Users.aggregate(
+      [
+        {
+          $unwind: {
+            path: "$results",
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: "results",
-          pipeline: [
-            {
-              $project: {
-                courses: 0,
-                example_of_job: 0,
+        {
+          $lookup: {
+            from: "results",
+            pipeline: [
+              {
+                $project: {
+                  courses: 0,
+                  example_of_job: 0,
+                },
               },
+            ],
+            localField: "results",
+            foreignField: "_id",
+            as: "userResult",
+          },
+        },
+        {
+          $unwind: {
+            path: "$userResult",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "answers",
+            localField: "userResult.desc_answers",
+            foreignField: "_id",
+            as: "userResult.desc_answers",
+          },
+        },
+        {
+          $unwind: {
+            path: "$userResult.desc_answers",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "questions",
+            localField: "userResult.desc_answers.question",
+            foreignField: "_id",
+            as: "userResult.desc_answers.question",
+          },
+        },
+        {
+          $unwind: {
+            path: "$userResult.desc_answers.question",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            doc: {
+              $push: "$$ROOT",
             },
-          ],
-          localField: "results",
-          foreignField: "_id",
-          as: "userResult",
+          },
         },
-      },
-      {
-        $unwind: {
-          path: "$userResult",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-    ]);
+      ],
+      { allowDiskUse: true }
+    );
+
     if (!users) return res.status(404).send("User not Found");
-    console.log("88888888888",users);
+    console.log("88888888888", users);
 
     res.status(200).send({ msg: "Users Fetched", users });
   } catch (error) {

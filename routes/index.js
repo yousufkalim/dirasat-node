@@ -15,6 +15,7 @@ router.use("/admin", require("./admin"));
 router.use("/", require("./blog"));
 router.use("/images", require("./images"));
 router.use("/siteViews", require("./siteViews"));
+router.use("/wilaya", require("./wilaya"));
 
 // Export
 module.exports = router;

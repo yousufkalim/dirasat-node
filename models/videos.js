@@ -10,12 +10,11 @@ const videoSchema = new Schema(
       type: String,
       required: true,
     },
-   
+
     yt_link: {
       type: String,
       required: false,
     },
-   
   },
   {
     timestamps: true,

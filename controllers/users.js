@@ -15,8 +15,8 @@ var transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
+    pass: process.env.PASSWORD
+  }
 });
 
 // Create a User
@@ -28,170 +28,114 @@ exports.createUser = async (req, res) => {
       first_name,
       last_name,
       date_of_birth,
-      education_level,
+      class_list,
       phone,
-      contact_me,
-      newsletter,
-      institute,
-      address,
-      customenewAddress,
-      country,
-      customeAddress,
+      wilaya,
+      Bac_Serie,
+      school_city,
+      school_name,
+      language,
+      accept_condition,
+      level1,
+      level2
     } = req.body;
 
-    if (req.body.address) {
-      const emailInDb = await Users.findOne({ email });
+    const emailInDb = await Users.findOne({ email });
 
-      if (emailInDb) {
-        let newUser = {
-          email,
-          first_name,
-          last_name,
-          education_level,
-          phone,
-          contact_me,
-          newsletter,
-          institute,
-          address,
-          customenewAddress,
-          date_of_birth: new Date(date_of_birth),
-          otp,
-        };
-        // sending otp to number
+    if (emailInDb) {
+      let newUser = {
+        email,
+        first_name,
+        last_name,
+        class_list,
+        phone,
+        wilaya,
+        Bac_Serie,
+        school_city,
+        school_name,
+        language,
+        accept_condition,
+        level1,
+        level2,
+        date_of_birth: new Date(date_of_birth),
+        otp
+      };
+      // sending otp to number
 
-        twilio.messages
-          .create({
-            body: `Votre code Dirasat est ${otp}`,
-            from: process.env.TWILIO_NUMBER,
-            to: `+33${phone.substring(1)}`,
-          })
-          .then(async () => {
-            console.log("OTP sent");
-            // save user
-          })
-          .catch((e) => {
-            console.error(e.code, e.message);
-            return res.send({ status: 500, message: e.message });
-          });
-        let updatedUser = await Users.findOneAndUpdate(
-          { _id: emailInDb._id },
-          {
-            $set: newUser,
-          },
-          {
-            new: true,
-          }
-        );
-        return res.json({ status: 200, message: "ok" });
-      } else {
-        const user = new Users({
-          email,
-          first_name,
-          last_name,
-          education_level,
-          phone,
-          contact_me,
-          newsletter,
-          institute,
-          address,
-          customenewAddress,
-          date_of_birth: new Date(date_of_birth),
-          otp,
-        });
-        // sending otp to number
-        twilio.messages
-          .create({
-            body: `Votre code Dirasat est ${otp}`,
-            from: process.env.TWILIO_NUMBER,
-            to: `+33${phone.substring(1)}`,
-          })
-          .then(async () => {
-            console.log("OTP sent");
-            // save user
-          })
-          .catch((e) => {
-            console.error(e.code, e.message);
-            return res.send({ status: 500, message: e.message });
-          });
-        const savedUser = await user.save();
-        return res.status(200).send({ msg: "Ok" });
-      }
+      // var mailOptions = {
+      //   from: process.env.EMAIL,
+      //   to: email,
+      //   subject: "Votre code de vérification Dirasat.",
+      //   html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`
+      // };
+      // transporter.sendMail(mailOptions, function (error, info) {
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log("OTP sent");
+      //   }
+      // });
+      console.log("algerian phon e is", `+213${phone.substring(1)}`);
+      // twilio.messages
+      //   .create({
+      //     body: `Votre code Dirasat est ${otp}`,
+      //     from: process.env.TWILIO_NUMBER,
+      //     to: `+33${phone.substring(1)}`,
+      //     to: `+213${phone.substring(1)}`
+      //   })
+      //   .then(async () => {
+      //     console.log("OTP sent");
+      //     // save user
+      //   })
+      //   .catch((e) => {
+      //     console.error(e.code, e.message);
+      //     return res.send({ status: 500, message: e.message });
+      //   });
+
+      let updatedUser = await Users.findOneAndUpdate(
+        { _id: emailInDb._id },
+        {
+          $set: newUser
+        },
+        {
+          new: true
+        }
+      );
+      return res.json({ status: 200, message: "ok" });
     } else {
-      const emailInDb = await Users.findOne({ email });
-
-      if (emailInDb) {
-        let newUser = {
-          email,
-          first_name,
-          last_name,
-          education_level,
-          phone,
-          contact_me,
-          newsletter,
-          institute,
-          address,
-          customenewAddress,
-          date_of_birth: new Date(date_of_birth),
-          otp,
-        };
-        // sending otp to number
-
-        var mailOptions = {
-          from: process.env.EMAIL,
-          to: email,
-          subject: "Votre code de vérification Dirasat.",
-          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`,
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("OTP sent");
-          }
-        });
-
-        let updatedUser = await Users.findOneAndUpdate(
-          { _id: emailInDb._id },
-          {
-            $set: newUser,
-          },
-          {
-            new: true,
-          }
-        );
-        return res.json({ status: 200, message: "ok" });
-      } else {
-        const user = new Users({
-          email,
-          first_name,
-          last_name,
-          education_level,
-          phone,
-          contact_me,
-          newsletter,
-          institute,
-          address,
-          customenewAddress,
-          date_of_birth: new Date(date_of_birth),
-          otp,
-        });
-        // sending otp to number
-        var mailOptions = {
-          from: process.env.EMAIL,
-          to: email,
-          subject: "Votre code de vérification Dirasat.",
-          html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`,
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("OTP sent");
-          }
-        });
-        const savedUser = await user.save();
-        return res.status(200).send({ msg: "Ok" });
-      }
+      const user = new Users({
+        email,
+        first_name,
+        last_name,
+        class_list,
+        phone,
+        wilaya,
+        Bac_Serie,
+        school_city,
+        school_name,
+        language,
+        accept_condition,
+        level1,
+        level2,
+        date_of_birth: new Date(date_of_birth),
+        otp
+      });
+      // sending otp to number
+      // var mailOptions = {
+      //   from: process.env.EMAIL,
+      //   to: email,
+      //   subject: "Votre code de vérification Dirasat.",
+      //   html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`
+      // };
+      // transporter.sendMail(mailOptions, function (error, info) {
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log("OTP sent");
+      //   }
+      // });
+      const savedUser = await user.save();
+      return res.status(200).send({ msg: "Ok" });
     }
   } catch (error) {
     console.log("Error ----> ", error);
@@ -223,15 +167,15 @@ exports.updateUser = async (req, res) => {
   try {
     const { id, email, advice, contact, phone } = req.body;
     let newUser = {
-      phone,
+      phone
     };
     let updatedUser = await Users.findOneAndUpdate(
       { _id: id },
       {
-        $set: newUser,
+        $set: newUser
       },
       {
-        new: true,
+        new: true
       }
     );
     return res.status(200).send({ msg: "Ok" });
@@ -249,7 +193,7 @@ exports.inviteUser = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: "Invitation sur Dirasat",
-      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.orientator.com/" >https://www.orientator.com/</a></p><p>L'équipe Dirasat</p></div>`,
+      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.dirasat.com/" >https://www.dirasat.com/</a></p><p>L'équipe Dirasat</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -272,13 +216,13 @@ exports.contactUs = async (req, res) => {
       name,
       email,
       message,
-      description,
+      description
     });
     var mailOptions = {
       from: email,
       to: process.env.EMAIL,
-      subject: "Nouveau contact Orientator",
-      html: `<div><h4> </h4><p>Prénom et nom : ${name}</p><p>Email: ${email}</p><p>Message : ${message}</p><p>Votre Message : ${description}</p></div>`,
+      subject: "Nouveau contact Dirasat",
+      html: `<div><h4> </h4><p>Prénom et nom : ${name}</p><p>Email: ${email}</p><p>Message : ${message}</p><p>Votre Message : ${description}</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {

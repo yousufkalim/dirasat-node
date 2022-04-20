@@ -18,7 +18,7 @@ exports.validateExample = [
     .isLength({ min: 8 }),
   check("gender", "Gender is required.").notEmpty(),
   check("role", "Role is required.").notEmpty(),
-  check("number", "Number is required.").notEmpty().trim(),
+  check("number", "Number is required.").notEmpty().trim()
 ];
 
 // User Creation Validation
@@ -26,11 +26,10 @@ exports.validateUser = [
   check("email", "Email is required.").notEmpty().isEmail().trim(),
   check("first_name", "First Name is required.").notEmpty().trim(),
   check("last_name", "Last Name is required.").notEmpty().trim(),
-  check("education_level", "Education Level is required.").notEmpty().trim(),
+
   check("phone", "Phone is required.").notEmpty().trim(),
-  check("newsletter", "Newsletter is required.").isBoolean(),
-  check("institute", "Institute is required.").notEmpty().trim(),
-  check("date_of_birth", "Date Of Birth is required.").notEmpty().trim(),
+
+  check("date_of_birth", "Date Of Birth is required.").notEmpty().trim()
 ];
 
 /*
