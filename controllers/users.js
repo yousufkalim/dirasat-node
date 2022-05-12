@@ -21,7 +21,9 @@ var transporter = nodemailer.createTransport({
 
 // Create a User
 exports.createUser = async (req, res) => {
-  const otp = Math.floor(Math.random() * 899999 + 100000);
+  // const otp = Math.floor(Math.random() * 899999 + 100000);
+  const otp = "1122";
+  console.log("req.body", req.body);
   try {
     const {
       email,
@@ -37,7 +39,10 @@ exports.createUser = async (req, res) => {
       language,
       accept_condition,
       level1,
-      level2
+      score,
+      stayAlgeria,
+      budget,
+      whichCountry
     } = req.body;
 
     const emailInDb = await Users.findOne({ email });
@@ -56,7 +61,10 @@ exports.createUser = async (req, res) => {
         language,
         accept_condition,
         level1,
-        level2,
+        score,
+        stayAlgeria,
+        budget,
+        whichCountry,
         date_of_birth: new Date(date_of_birth),
         otp
       };
@@ -116,7 +124,10 @@ exports.createUser = async (req, res) => {
         language,
         accept_condition,
         level1,
-        level2,
+        score,
+        stayAlgeria,
+        budget,
+        whichCountry,
         date_of_birth: new Date(date_of_birth),
         otp
       });
@@ -152,6 +163,8 @@ exports.verifyUser = async (req, res) => {
     if (!user) return res.status(202).send("Please enter correct otp");
     user.otp = null;
     userData = await user.save();
+    console.log("user11", user);
+    console.log("user Data22", userData);
 
     return res
       .status(200)

@@ -49,7 +49,17 @@ const userSchema = new Schema(
     level1: {
       type: String
     },
-    level2: {
+    score: {
+      type: String
+    },
+
+    stayAlgeria: {
+      type: String
+    },
+    budget: {
+      type: String
+    },
+    whichCountry: {
       type: String
     },
 

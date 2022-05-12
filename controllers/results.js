@@ -3,6 +3,7 @@ const Users = require("../models/users");
 const Answers = require("../models/answers");
 const Domains = require("../models/domains");
 const Courses = require("../models/courses");
+const DCourses = require("../models/dcourses");
 const geoLib = require("geo-lib");
 const Algorithm = require("../utils/percentageAlgorithm");
 const checkGroup = require("../utils/checkGroup");
@@ -20,14 +21,30 @@ exports.create = async (req, res) => {
     const answer = await Answers.findById(last_answer).populate("job"); //Finding answer for Job and Domain Id's
 
     const domain = await Domains.findById(answer.domain); //Finding Domain name for result
+    const { subdomain } = domain;
     const desc_answers_in_db = await Answers.find({
-      _id: { $in: disc_answers },
+      _id: { $in: disc_answers }
     }); //Finding all discriminatory Answers In Db
+    console.log("user ", user);
+    console.log("last_answer", answer);
+    console.log("domain", domain);
 
     // Fetching all courses in DB from job, domain and language filters
     let courses = await Courses.find({
       job: answer.job,
-      domain: answer.domain,
+      domain: answer.domain
+    });
+    let dcourses = await DCourses.find({});
+    console.log("dcourses are", dcourses.length);
+    let newdcourses = dcourses.map((dcourse, index) => {
+      if (
+        // dcourse.sub_domains == domain.subdomain &&
+        dcourse.bacSerie.includes(user.Bac_Serie) &&
+        (dcourse.WilayaofEligibility.includes(user.wilaya.code) ||
+          dcourse.WilayaofEligibility.includes("Recrutement ational"))
+      ) {
+        console.log("here are the selected courses to show", dcourse, index);
+      }
     });
 
     // Getting the First letters of disc answers for algorithms
@@ -51,20 +68,20 @@ exports.create = async (req, res) => {
             if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
               return {
                 ...item._doc,
-                selectivityrating: "4",
+                selectivityrating: "4"
               };
             }
             if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
               return {
                 ...item._doc,
-                selectivityrating: "2",
+                selectivityrating: "2"
               };
             }
             return {
               ...item._doc,
               selectivityrating: item._doc.selectivity
                 ? item._doc.selectivity
-                : "",
+                : ""
             };
           } else {
             if (
@@ -77,46 +94,46 @@ exports.create = async (req, res) => {
               if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
                 return {
                   ...item._doc,
-                  selectivityrating: "4",
+                  selectivityrating: "4"
                 };
               }
               if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
                 return {
                   ...item._doc,
-                  selectivityrating: "2",
+                  selectivityrating: "2"
                 };
               }
               return {
                 ...item._doc,
                 selectivityrating: item._doc.selectivity
                   ? item._doc.selectivity
-                  : "",
+                  : ""
               };
             } else {
               if (item._doc.selectivity.substring(0, 6) == "3 ou 4") {
                 return {
                   ...item._doc,
-                  selectivityrating: "3",
+                  selectivityrating: "3"
                 };
               }
               if (item._doc.selectivity.substring(0, 6) == "1 ou 2") {
                 return {
                   ...item._doc,
-                  selectivityrating: "1",
+                  selectivityrating: "1"
                 };
               }
               return {
                 ...item._doc,
                 selectivityrating: item._doc.selectivity
                   ? item._doc.selectivity
-                  : "",
+                  : ""
               };
             }
           }
         } else {
           return {
             ...item._doc,
-            selectivityrating: "1",
+            selectivityrating: "1"
           };
         }
       } else {
@@ -183,7 +200,7 @@ exports.create = async (req, res) => {
       filtered.forEach((item) => {
         filteredCourses.push({
           ...item,
-          percentage: algo_object[type],
+          percentage: algo_object[type]
         });
       });
     });
@@ -198,8 +215,8 @@ exports.create = async (req, res) => {
             p1: { lat: user.address.lat, lon: user.address.lng },
             p2: {
               lat: item.gps_coordinates.lat,
-              lon: item.gps_coordinates.lng,
-            },
+              lon: item.gps_coordinates.lng
+            }
           });
           if (result.distance >= 0 && result.distance <= 30) {
             distanceRatingIs = 5;
@@ -215,18 +232,18 @@ exports.create = async (req, res) => {
           return {
             ...item,
             distanceRatingIs,
-            distance: result.distance,
+            distance: result.distance
           };
         } else {
           return {
             ...item,
-            distanceRatingIs: 1,
+            distanceRatingIs: 1
           };
         }
       } else {
         return {
           ...item,
-          distanceRatingIs: "N/A",
+          distanceRatingIs: "N/A"
         };
       }
     });
@@ -236,7 +253,7 @@ exports.create = async (req, res) => {
       percentage: item.percentage,
       typeofcourse: item.type_of_course,
       selectivityrating: item.selectivityrating ? item.selectivityrating : "",
-      distancerating: item.distanceRatingIs,
+      distancerating: item.distanceRatingIs
     }));
 
     const result = new Results({
@@ -246,7 +263,7 @@ exports.create = async (req, res) => {
       type_of_job: answer.job.type_of_job,
       domain: domain.name,
       desc_answers: disc_answers,
-      courses,
+      courses
     });
     const savedResult = await result.save();
 
@@ -255,8 +272,8 @@ exports.create = async (req, res) => {
       user_id,
       {
         $addToSet: {
-          results: savedResult,
-        },
+          results: savedResult
+        }
       },
       { new: true }
     );
@@ -265,7 +282,7 @@ exports.create = async (req, res) => {
       .populate({
         path: "courses.courseId",
         // this is for nested population . courseId has a property domain which is being populated
-        populate: { path: "domain" },
+        populate: { path: "domain" }
       }); // Fetching results from DB for Response
     // console.log("desc_answers_in_db[5].answer", desc_answers_in_db[5].answer);
     // sort the courses on the base of last descrAnswer
@@ -369,7 +386,7 @@ exports.create = async (req, res) => {
       newfilteredCourses.push({
         type: CPGE[0].courseId.type_of_course,
         percentage: CPGE[0].percentage,
-        courses: [...getTenCourses],
+        courses: [...getTenCourses]
       });
     }
     if (Licence.length >= 1) {
@@ -378,7 +395,7 @@ exports.create = async (req, res) => {
       newfilteredCourses.push({
         type: Licence[0].courseId.type_of_course,
         percentage: Licence[0].percentage,
-        courses: [...getTenCourses],
+        courses: [...getTenCourses]
       });
     }
     if (BTS.length >= 1) {
@@ -387,7 +404,7 @@ exports.create = async (req, res) => {
       newfilteredCourses.push({
         type: BTS[0].courseId.type_of_course,
         percentage: BTS[0].percentage,
-        courses: [...getTenCourses],
+        courses: [...getTenCourses]
       });
     }
     if (Ecole.length >= 1) {
@@ -396,7 +413,7 @@ exports.create = async (req, res) => {
       newfilteredCourses.push({
         type: Ecole[0].courseId.type_of_course,
         percentage: Ecole[0].percentage,
-        courses: [...getTenCourses],
+        courses: [...getTenCourses]
       });
     }
     if (BUT.length >= 1) {
@@ -405,7 +422,7 @@ exports.create = async (req, res) => {
       newfilteredCourses.push({
         type: BUT[0].courseId.type_of_course,
         percentage: BUT[0].percentage,
-        courses: [...getTenCourses],
+        courses: [...getTenCourses]
       });
     }
     // sort type of course on the base of percentage
@@ -415,13 +432,13 @@ exports.create = async (req, res) => {
       example_of_job: answer.job.example_of_job,
       type_of_job: answer.job.type_of_job,
       domain: domain.name,
-      data: newfilteredCourses,
+      data: newfilteredCourses
     };
 
     res.status(200).send({
       msg: "Ok",
       // result: resultForResponse,
-      result: newResult,
+      result: newResult
     });
   } catch (error) {
     console.log("Error ----> ", error);

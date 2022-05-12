@@ -4,8 +4,18 @@ const domainScehma = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
+    subdomain: {
+      type: String,
+      required: true
+    },
+    sub_domains: [
+      {
+        type: String,
+        required: true
+      }
+    ]
   },
   { timestamps: true }
 );
