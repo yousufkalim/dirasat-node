@@ -26,7 +26,7 @@ exports.create = async (req, res) => {
       _id: { $in: disc_answers }
     }); //Finding all discriminatory Answers In Db
     console.log("user ", user);
-    // console.log("last_answer", answer);
+    console.log("last_answer", answer);
     // console.log("domain", domain);
 
     // Fetching all courses in DB from job, domain and language filters
