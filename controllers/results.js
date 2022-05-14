@@ -26,8 +26,8 @@ exports.create = async (req, res) => {
       _id: { $in: disc_answers }
     }); //Finding all discriminatory Answers In Db
     console.log("user ", user);
-    console.log("last_answer", answer);
-    console.log("domain", domain);
+    // console.log("last_answer", answer);
+    // console.log("domain", domain);
 
     // Fetching all courses in DB from job, domain and language filters
     let courses = await Courses.find({
@@ -36,17 +36,19 @@ exports.create = async (req, res) => {
     });
     let dcourses = await DCourses.find({});
     console.log("dcourses are", dcourses.length);
-    let newdcourses = dcourses.map((dcourse, index) => {
+    let newDcourse = [];
+    dcourses.map((dcourse, index) => {
       if (
-        // dcourse.sub_domains == domain.subdomain &&
-        dcourse.bacSerie.includes(user.Bac_Serie) &&
+        (dcourse.sub_domains == domain.subdomain ||
+          dcourse.bacSerie.includes(user.Bac_Serie)) &&
         (dcourse.WilayaofEligibility.includes(user.wilaya.code) ||
           dcourse.WilayaofEligibility.includes("Recrutement ational"))
       ) {
-        console.log("here are the selected courses to show", dcourse, index);
+        // console.log("here are the selected courses to show", dcourse, index);
+        newDcourse.push(dcourse);
       }
     });
-
+    // console.log("here are the selected courses to show", newDcourse);
     // Getting the First letters of disc answers for algorithms
     const first_disc_ans =
       desc_answers_in_db[1].answer.substring(0, 1) === "O" ? "P" : "G";
@@ -255,6 +257,9 @@ exports.create = async (req, res) => {
       selectivityrating: item.selectivityrating ? item.selectivityrating : "",
       distancerating: item.distanceRatingIs
     }));
+    newDcourse = newDcourse.map((item) => ({
+      dcourseId: item._id
+    }));
 
     const result = new Results({
       user: user_id,
@@ -263,9 +268,11 @@ exports.create = async (req, res) => {
       type_of_job: answer.job.type_of_job,
       domain: domain.name,
       desc_answers: disc_answers,
-      courses
+      // courses,
+      dcourses: newDcourse
     });
     const savedResult = await result.save();
+    // console.log("newDcourse22", newDcourse);
 
     // Saving result to user Schema in DB
     await Users.findByIdAndUpdate(
@@ -277,15 +284,18 @@ exports.create = async (req, res) => {
       },
       { new: true }
     );
+    // console.log("savedResult22", savedResult);
     const resultForResponse = await Results.findById(savedResult._id)
-      .populate("courses.courseId")
-      .populate({
-        path: "courses.courseId",
-        // this is for nested population . courseId has a property domain which is being populated
-        populate: { path: "domain" }
-      }); // Fetching results from DB for Response
+      // .populate("courses.courseId")
+      .populate("dcourses.dcourseId");
+    // .populate({
+    //   path: "courses.courseId",
+    //   // this is for nested population . courseId has a property domain which is being populated
+    //   populate: { path: "domain" }
+    // }); // Fetching results from DB for Response
     // console.log("desc_answers_in_db[5].answer", desc_answers_in_db[5].answer);
     // sort the courses on the base of last descrAnswer
+    // console.log("resultForResponse22", resultForResponse.dcourses);
     if (desc_answers_in_db[5].answer == "Prestige") {
       resultForResponse.courses.sort(
         // (a, b) => parseInt(b.selectivityrating) - parseInt(a.selectivityrating)
@@ -432,8 +442,9 @@ exports.create = async (req, res) => {
       example_of_job: answer.job.example_of_job,
       type_of_job: answer.job.type_of_job,
       domain: domain.name,
-      data: newfilteredCourses
+      data: resultForResponse.dcourses
     };
+    console.log("end result issss", newResult.data);
 
     res.status(200).send({
       msg: "Ok",
