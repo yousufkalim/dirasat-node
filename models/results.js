@@ -24,61 +24,6 @@ const dcourseSchema = new Schema({
     required: true,
     ref: "DCourse"
   }
-  // Establishment: {
-  //   type: String,
-  // },
-  // Status: {
-  //   type: String,
-  // },
-  // Curriculum: {
-  //   type: String,
-  // },
-  // TrainingSector: {
-  //   type: String,
-  //   required: true,
-  // },
-  // Speciality: {
-  //   type: String,
-  // },
-  // SectorCode: {
-  //   type: String,
-  // },
-  // City: {
-  //   type: String,
-  //   required: true,
-  // },
-  // EstablishmentCode: {
-  //   type: String,
-  // },
-  // WilayaofEligibility: {
-  //   type: String,
-  // },
-  // bacSerie: {
-  //   type: String,
-  //   required: true,
-  // },
-  // Guardianship: {
-  //   type: String,
-  // },
-  // sector: {
-  //   type: String,
-  // },
-  // EstablishmentCode: {
-  //   type: String,
-  // },
-  // WilayaofEligibility: {
-  //   type: String,
-  // },
-  // bacSerie: {
-  //   type: String,
-  //   required: true,
-  // },
-  // Guardianship: {
-  //   type: String,
-  // },
-  // sector: {
-  //   type: String,
-  // },
 });
 
 const resultSchema = new Schema(
