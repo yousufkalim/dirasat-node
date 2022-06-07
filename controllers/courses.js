@@ -88,12 +88,12 @@ exports.postAllDcourse = async (req, res) => {
     await xlsxFile(req.file.path).then(async (rows) => {
       // rows.shift();
       let newRows = rows.splice(1);
-      // console.log("new arris", newRows[0]);
+      // console.log("new arris", newRows[0][17]);
       const promises = newRows.map((item, index) => {
         let number = Math.floor(Math.random() * 20) + 1;
         console.log(
           "item with index",
-          item[10] ? true : "changgggggggggggggg",
+          // item[10] ? true : "changgggggggggggggg",
           index
         );
         const course = new DCourse({
@@ -114,12 +114,12 @@ exports.postAllDcourse = async (req, res) => {
           EligibilityAverage: number, //random number
           wilaya: item[14],
           language: item[15] || "N/A",
-          languagestar: item[16],
-          sub_domains: item[18],
-          duration: item[20],
-          cost: item[21]
+          languagestar: item[16] || "N/A",
+          sub_domains: item[17],
+          duration: item[21],
+          cost: item[22]
         });
-        // console.log("Dcourses are", course);
+        // console.log("Dcourses are", courssse);
         return course.save();
       });
       await Promise.all(promises); //saving all courses at once
