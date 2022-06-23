@@ -6,7 +6,6 @@ const fs = require("fs");
 exports.getAll = async (req, res) => {
   try {
     const domains = await Domains.find(); //Find all domains in DB
-
     res.status(200).send({ msg: "Ok", domains });
   } catch (error) {
     console.log("Error ----> ", error);
@@ -23,7 +22,7 @@ exports.postAll = async (req, res) => {
     await xlsxFile(req.file.path).then(async (rows) => {
       const promises = rows.map(async (item) => {
         const domain = new Domains({
-          name: item[0],
+          name: item[0]
         });
         return domain.save();
       });
