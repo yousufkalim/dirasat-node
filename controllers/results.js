@@ -20,12 +20,22 @@ exports.create = async (req, res) => {
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers }
     }); //Finding all discriminatory Answers In Db
-    console.log("user ", user);
-    console.log("last_answer", answer);
-    console.log("domain", domain);
+    // console.log("user ", user);
+    // console.log("last_answer", answer);
+    // console.log("domain", domain);
 
     let dcourses = await DCourses.find({});
+
+    // filter by language
+    if (user.language != "Les deux") {
+      console.log("filter on the base of ", user?.language);
+      dcourses = dcourses.filter((dcourse, index) => {
+        return dcourse.language == user?.language;
+      });
+    }
+
     // console.log("dcourses are", dcourses.length);
+    // filter result on the base of subdomains, bacserie,and wilaya eligibility
     let newDcourse = [];
     dcourses.map((dcourse, index) => {
       if (
@@ -34,12 +44,14 @@ exports.create = async (req, res) => {
         (dcourse.WilayaofEligibility.includes(user.wilaya.code) ||
           dcourse.WilayaofEligibility.includes("Recrutement national"))
       ) {
-        console.log("here are the selected courses to show", dcourse, index);
+        // console.log("here are the selected courses to show", dcourse, index);
         newDcourse.push(dcourse);
       }
     });
-    console.log("here are the selected courses to show", newDcourse.length);
+    console.log("lenghth selected courses to show", newDcourse.length);
+    // console.log("here are the selected courses to show", newDcourse);
 
+    // make id of each course according to schema
     newDcourse = newDcourse.map((item) => ({
       dcourseId: item._id
     }));
