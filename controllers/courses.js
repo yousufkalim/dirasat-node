@@ -98,7 +98,6 @@ exports.postAllDcourse = async (req, res) => {
         );
         const course = new DCourse({
           //Creating a new DCourse
-
           Establishment: item[0],
           Status: item[1],
           Curriculum: item[2],

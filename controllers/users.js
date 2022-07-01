@@ -18,6 +18,8 @@ var transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD
   }
 });
+console.log("process.env.EMAIL", process.env.EMAIL);
+console.log("process.env.process.env.PASSWORD", process.env.PASSWORD);
 
 // Create a User
 exports.createUser = async (req, res) => {
@@ -70,19 +72,19 @@ exports.createUser = async (req, res) => {
       };
       // sending otp to number
 
-      // var mailOptions = {
-      //   from: process.env.EMAIL,
-      //   to: email,
-      //   subject: "Votre code de vérification Dirasat.",
-      //   html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`
-      // };
-      // transporter.sendMail(mailOptions, function (error, info) {
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log("OTP sent");
-      //   }
-      // });
+      var mailOptions = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Code de vérification Dirasat",
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${otp}  </p><p>L'équipe Dirasat</p></div>`
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("OTP sent");
+        }
+      });
       console.log("algerian phon e is", `+213${phone.substring(1)}`);
       // twilio.messages
       //   .create({
@@ -132,19 +134,19 @@ exports.createUser = async (req, res) => {
         otp
       });
       // sending otp to number
-      // var mailOptions = {
-      //   from: process.env.EMAIL,
-      //   to: email,
-      //   subject: "Votre code de vérification Dirasat.",
-      //   html: `<div><h4> Bonjour,</h4><p>Votre code de vérification Dirasat est :${otp}  </p><p>L'équipe Dirasat</p></div>`
-      // };
-      // transporter.sendMail(mailOptions, function (error, info) {
-      //   if (error) {
-      //     console.log(error);
-      //   } else {
-      //     console.log("OTP sent");
-      //   }
-      // });
+      var mailOptions = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Code de vérification Dirasat",
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${otp}  </p><p>L'équipe Dirasat</p></div>`
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("OTP sent");
+        }
+      });
       const savedUser = await user.save();
       return res.status(200).send({ msg: "Ok" });
     }
@@ -156,6 +158,17 @@ exports.createUser = async (req, res) => {
 
 // Verify a User
 exports.verifyUser = async (req, res) => {
+  try {
+    let user = await Users.findOne({ otp: req.body.otp });
+    if (!user) return res.status(202).send("Please enter correct otp");
+    return res.status(200).send({ msg: "Ok" });
+  } catch (error) {
+    console.log("Error ----> ", error);
+    res.status(500).send("Something Failed");
+  }
+};
+// Verify a User
+exports.verifyUserbyEmail = async (req, res) => {
   try {
     const questions = await Questions.find();
     const answers = await Answers.find().populate("question");
