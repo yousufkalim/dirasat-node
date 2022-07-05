@@ -5,7 +5,8 @@ const {
   updateUser,
   inviteUser,
   verifyUser,
-  contactUs,
+  verifyUserbyEmail,
+  contactUs
 } = require("../controllers/users");
 const { validateUser, isValidated } = require("../middleware/validators");
 
@@ -14,6 +15,7 @@ const { validateUser, isValidated } = require("../middleware/validators");
 // POST
 router.post("/create", validateUser, isValidated, createUser); //Create a User
 router.post("/verify", verifyUser); //Verify a User
+router.post("/verifybyemail", verifyUserbyEmail); //Verify a User
 router.post("/update", updateUser); //Create a User
 router.post("/invite", inviteUser); //Create a User
 router.post("/contact", contactUs); //Create a User
