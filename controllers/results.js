@@ -1,9 +1,9 @@
-const Results = require("../models/results");
-const Users = require("../models/users");
-const Answers = require("../models/answers");
-const Domains = require("../models/domains");
-const Courses = require("../models/courses");
-const DCourses = require("../models/dcourses");
+const Results = require('../models/results');
+const Users = require('../models/users');
+const Answers = require('../models/answers');
+const Domains = require('../models/domains');
+const Courses = require('../models/courses');
+const DCourses = require('../models/dcourses');
 
 // Create a Result
 exports.create = async (req, res) => {
@@ -11,45 +11,76 @@ exports.create = async (req, res) => {
     const { last_answer, user_id, disc_answers } = req.body;
 
     const user = await Users.findById(user_id); //Finding User in DB
-    if (!user) return res.status(404).send("User Not Found");
+    if (!user) return res.status(404).send('User Not Found');
 
-    const answer = await Answers.findById(last_answer).populate("job"); //Finding answer for Job and Domain Id's
+    const answer = await Answers.findById(last_answer).populate('job'); //Finding answer for Job and Domain Id's
 
     const domain = await Domains.findById(answer.domain); //Finding Domain name for result
 
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers }
-    }); //Finding all discriminatory Answers In Db
-    // console.log("user ", user);
-    // console.log("last_answer", answer);
-    // console.log("domain", domain);
+    }).populate('question'); //Finding all discriminatory Answers In Db
+    console.log('user ', user);
+    console.log('last_answer', answer);
+    console.log('domain', domain);
+    // console.log('desc_answers_in_db', desc_answers_in_db);
 
     let dcourses = await DCourses.find({});
+    console.log('dcourses length', dcourses.length);
 
     // filter by language
-    if (user.language != "Les deux") {
-      console.log("filter on the base of ", user?.language);
+    // console.log('arabic question', desc_answers_in_db[9]?.answer);
+    // console.log('english question', desc_answers_in_db[3]?.answer);
+
+    if (
+      desc_answers_in_db[3]?.answer == 'Oui' &&
+      desc_answers_in_db[9]?.answer == 'Oui'
+    ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == user?.language;
+        return dcourse.language == 'Français' || 'English' || 'Arabe';
+      });
+    } else if (
+      desc_answers_in_db[3]?.answer == 'Non' &&
+      desc_answers_in_db[9]?.answer == 'Oui'
+    ) {
+      dcourses = dcourses.filter((dcourse, index) => {
+        return dcourse.language == 'Français' || 'Arabe';
+      });
+    } else if (
+      desc_answers_in_db[3]?.answer == 'Oui' &&
+      desc_answers_in_db[9]?.answer == 'Non'
+    ) {
+      dcourses = dcourses.filter((dcourse, index) => {
+        return dcourse.language == 'Français' || 'English';
+      });
+    } else {
+      dcourses = dcourses.filter((dcourse, index) => {
+        return dcourse.language == 'Français';
       });
     }
 
-    // console.log("dcourses are", dcourses.length);
-    // filter result on the base of subdomains, bacserie,and wilaya eligibility
+    //Filter1 filter result on the base of subdomains, bacserie,and wilaya eligibility
     let newDcourse = [];
     dcourses.map((dcourse, index) => {
       if (
         dcourse.sub_domains == domain.subdomain &&
-        dcourse.bacSerie.includes(user.Bac_Serie) &&
+        (dcourse.bacSerie.includes(user.Bac_Serie) ||
+          dcourse.bacSerie.includes('Toutes Séries de Baccalauréat')) &&
         (dcourse.WilayaofEligibility.includes(user.wilaya.code) ||
-          dcourse.WilayaofEligibility.includes("Recrutement national"))
+          dcourse.WilayaofEligibility.includes('Recrutement national'))
       ) {
-        // console.log("here are the selected courses to show", dcourse, index);
         newDcourse.push(dcourse);
       }
     });
-    console.log("lenghth selected courses to show", newDcourse.length);
-    // console.log("here are the selected courses to show", newDcourse);
+    console.log('lenghth selected courses to show', newDcourse.length);
+
+    //Filter1 End
+
+    // Filter on the base of coast
+    // console.log('desc_answers_in_db', desc_answers_in_db[5]);
+    if (desc_answers_in_db[5]?.answer == 'Coût') {
+      newDcourse?.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
+    }
 
     // make id of each course according to schema
     newDcourse = newDcourse.map((item) => ({
@@ -67,7 +98,6 @@ exports.create = async (req, res) => {
       dcourses: newDcourse
     });
     const savedResult = await result.save();
-    // console.log("newDcourse22", newDcourse);
 
     // Saving result to user Schema in DB
     await Users.findByIdAndUpdate(
@@ -81,7 +111,7 @@ exports.create = async (req, res) => {
     );
     // console.log("savedResult22", savedResult);
     const resultForResponse = await Results.findById(savedResult._id).populate(
-      "dcourses.dcourseId"
+      'dcourses.dcourseId'
     );
 
     let newResult = {
@@ -93,12 +123,12 @@ exports.create = async (req, res) => {
     // console.log("end result issss", newResult.data);
 
     res.status(200).send({
-      msg: "Ok",
+      msg: 'Ok',
       // result: resultForResponse,
       result: newResult
     });
   } catch (error) {
-    console.log("Error ----> ", error);
-    res.status(500).send("Something Failed");
+    console.log('Error ----> ', error);
+    res.status(500).send('Something Failed');
   }
 };

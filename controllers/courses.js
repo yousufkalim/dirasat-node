@@ -1,16 +1,16 @@
-const xlsxFile = require("read-excel-file/node");
-const DCourse = require("../models/dcourses");
-const Domains = require("../models/domains");
-const Jobs = require("../models/jobs");
-const fs = require("fs");
-const path = require("path").resolve(__dirname, "..");
-var NodeGeocoder = require("node-geocoder");
+const xlsxFile = require('read-excel-file/node');
+const DCourse = require('../models/dcourses');
+const Domains = require('../models/domains');
+const Jobs = require('../models/jobs');
+const fs = require('fs');
+const path = require('path').resolve(__dirname, '..');
+var NodeGeocoder = require('node-geocoder');
 
 let options = {
-  provider: "google",
-  httpAdapter: "https", // Default
-  apiKey: "GOOGLE_API_KEY_REDACTED", // for Mapquest, OpenCage, Google Premier
-  formatter: "json" // 'gpx', 'string', ...
+  provider: 'google',
+  httpAdapter: 'https', // Default
+  apiKey: 'GOOGLE_API_KEY_REDACTED', // for Mapquest, OpenCage, Google Premier
+  formatter: 'json' // 'gpx', 'string', ...
 };
 
 let geocoder = NodeGeocoder(options);
@@ -19,10 +19,10 @@ let geocoder = NodeGeocoder(options);
 exports.getAll = async (req, res) => {
   try {
     const courses = await Courses.find(); //Find all courses in DB
-    res.status(200).send({ msg: "Ok", courses });
+    res.status(200).send({ msg: 'Ok', courses });
   } catch (error) {
-    console.log("Error ----> ", error);
-    res.status(500).send("Something Failed");
+    console.log('Error ----> ', error);
+    res.status(500).send('Something Failed');
   }
 };
 
@@ -53,12 +53,12 @@ exports.postAll = async (req, res) => {
           gps_coordinates:
             item[12] !== null && item[12].length > 0
               ? {
-                  lat: item[12] ? item[12].split(",")[0].trim() : null,
-                  lng: item[12] ? item[12].split(",")[1].trim() : null
+                  lat: item[12] ? item[12].split(',')[0].trim() : null,
+                  lng: item[12] ? item[12].split(',')[1].trim() : null
                 }
               : null,
           zipcode:
-            item[13].charAt(item[13].length - 3) === "9"
+            item[13].charAt(item[13].length - 3) === '9'
               ? item[13].slice(-3)
               : item[13].slice(-2),
           city: item[13]
@@ -73,10 +73,10 @@ exports.postAll = async (req, res) => {
       console.log(err);
     });
 
-    res.status(200).send({ msg: "Ok" });
+    res.status(200).send({ msg: 'Ok' });
   } catch (error) {
-    console.log("Error ----> ", error);
-    res.status(500).send("Something Failed");
+    console.log('Error ----> ', error);
+    res.status(500).send('Something Failed');
   }
 };
 
@@ -88,12 +88,12 @@ exports.postAllDcourse = async (req, res) => {
     await xlsxFile(req.file.path).then(async (rows) => {
       // rows.shift();
       let newRows = rows.splice(1);
-      // console.log("new arris", newRows[0][17]);
+      console.log('new arris', newRows[0]);
       const promises = newRows.map((item, index) => {
         let number = Math.floor(Math.random() * 20) + 1;
         console.log(
-          "item with index",
-          // item[10] ? true : "changgggggggggggggg",
+          'item with index',
+          item[1] ? true : 'changgggggggggggggg',
           index
         );
         const course = new DCourse({
@@ -103,22 +103,22 @@ exports.postAllDcourse = async (req, res) => {
           Curriculum: item[2],
           TrainingSector: item[4],
           Speciality: item[5],
-          SectorCode: item[6] || "N/A",
+          SectorCode: item[6] || 'N/A',
           City: item[7],
-          EstablishmentCode: item[8] || "N/A",
+          EstablishmentCode: item[8] || 'N/A',
           WilayaofEligibility: item[9],
-          bacSerie: item[10] || "N/A",
+          bacSerie: item[10] || 'N/A',
           Guardianship: item[11],
           sector: item[12],
           EligibilityAverage: number, //random number
           wilaya: item[14],
-          language: item[15] || "N/A",
-          languagestar: item[16] || "N/A",
+          language: item[15] || 'N/A',
+          languagestar: item[16] || 'N/A',
           sub_domains: item[17],
           duration: item[21],
           cost: item[22]
         });
-        // console.log("Dcourses are", courssse);
+        // console.log("Dcourses are", course);
         return course.save();
       });
       await Promise.all(promises); //saving all courses at once
@@ -128,10 +128,10 @@ exports.postAllDcourse = async (req, res) => {
       console.log(err);
     });
 
-    res.status(200).send({ msg: "Ok" });
+    res.status(200).send({ msg: 'Ok' });
   } catch (error) {
-    console.log("Error ----> ", error);
-    res.status(500).send("Something Failed");
+    console.log('Error ----> ', error);
+    res.status(500).send('Something Failed');
   }
 };
 

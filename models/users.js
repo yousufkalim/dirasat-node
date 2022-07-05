@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
   {
@@ -52,6 +52,15 @@ const userSchema = new Schema(
     score: {
       type: String
     },
+    lastDiploma: {
+      type: String
+    },
+    ville: {
+      type: String
+    },
+    studyYear: {
+      type: String
+    },
 
     stayAlgeria: {
       type: String
@@ -68,11 +77,11 @@ const userSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "Result"
+        ref: 'Result'
       }
     ]
   },
   { timestamps: true }
 );
 
-module.exports = model("User", userSchema);
+module.exports = model('User', userSchema);
