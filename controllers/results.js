@@ -2,7 +2,6 @@ const Results = require('../models/results');
 const Users = require('../models/users');
 const Answers = require('../models/answers');
 const Domains = require('../models/domains');
-const Courses = require('../models/courses');
 const DCourses = require('../models/dcourses');
 
 // Create a Result
@@ -52,34 +51,34 @@ exports.create = async (req, res) => {
 
     // filter by language
     if (
-      englishLanguage[0]?.answer == 'Oui' &&
-      arabicLanguage[0]?.answer == 'Oui'
+      englishLanguage[0]?.answer === 'Oui' &&
+      arabicLanguage[0]?.answer === 'Oui'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'English' || 'Arabe';
+        return dcourse.language === 'Français' || 'English' || 'Arabe';
       });
     } else if (
-      englishLanguage[0]?.answer == 'Non' &&
-      arabicLanguage[0]?.answer == 'Oui'
+      englishLanguage[0]?.answer === 'Non' &&
+      arabicLanguage[0]?.answer === 'Oui'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'Arabe';
+        return dcourse.language === 'Français' || 'Arabe';
       });
     } else if (
-      englishLanguage[0]?.answer == 'Oui' &&
-      arabicLanguage[0]?.answer == 'Non'
+      englishLanguage[0]?.answer === 'Oui' &&
+      arabicLanguage[0]?.answer === 'Non'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'English';
+        return dcourse.language === 'Français' || 'English';
       });
     } else {
-      dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français';
+      dcourses = dcourses.filter((dcourse) => {
+        return dcourse.language === 'Français';
       });
     }
     //Filter1 filter result on the base of subdomains, bacserie,and wilaya eligibility
     let newDcourse = [];
-    dcourses.map((dcourse, index) => {
+    dcourses.map((dcourse) => {
       if (
         dcourse.sub_domains == domain.subdomain &&
         (dcourse.bacSerie.includes(user.Bac_Serie) ||
