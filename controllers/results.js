@@ -2,7 +2,6 @@ const Results = require('../models/results');
 const Users = require('../models/users');
 const Answers = require('../models/answers');
 const Domains = require('../models/domains');
-const Courses = require('../models/courses');
 const DCourses = require('../models/dcourses');
 
 // Create a Result
@@ -23,45 +22,63 @@ exports.create = async (req, res) => {
     console.log('user ', user);
     console.log('last_answer', answer);
     console.log('domain', domain);
-    // console.log('desc_answers_in_db', desc_answers_in_db);
+    console.log('desc_answers_in_db', desc_answers_in_db);
+
+    let englishLanguage = desc_answers_in_db.filter((d) => {
+      return (
+        d?.question?.question ===
+        "Let's speak English! Veux-tu inclure les formations 100% en Anglais?"
+      );
+    });
+    let arabicLanguage = desc_answers_in_db.filter((d) => {
+      return (
+        d?.question?.question ===
+        'Veux-tu inclure les formations 100% en Arabe?'
+      );
+    });
+    let criteria = desc_answers_in_db.filter((d) => {
+      return (
+        d?.question?.question ===
+        'Quel est le critère le plus important dans le choix de ta formation?'
+      );
+    });
+    console.log('englishLanguage', englishLanguage);
+    console.log('arabicLanguage', arabicLanguage);
+    console.log('criteria', criteria);
 
     let dcourses = await DCourses.find({});
     console.log('dcourses length', dcourses.length);
 
     // filter by language
-    // console.log('arabic question', desc_answers_in_db[9]?.answer);
-    // console.log('english question', desc_answers_in_db[3]?.answer);
-
     if (
-      desc_answers_in_db[3]?.answer == 'Oui' &&
-      desc_answers_in_db[9]?.answer == 'Oui'
+      englishLanguage[0]?.answer === 'Oui' &&
+      arabicLanguage[0]?.answer === 'Oui'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'English' || 'Arabe';
+        return dcourse.language === 'Français' || 'English' || 'Arabe';
       });
     } else if (
-      desc_answers_in_db[3]?.answer == 'Non' &&
-      desc_answers_in_db[9]?.answer == 'Oui'
+      englishLanguage[0]?.answer === 'Non' &&
+      arabicLanguage[0]?.answer === 'Oui'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'Arabe';
+        return dcourse.language === 'Français' || 'Arabe';
       });
     } else if (
-      desc_answers_in_db[3]?.answer == 'Oui' &&
-      desc_answers_in_db[9]?.answer == 'Non'
+      englishLanguage[0]?.answer === 'Oui' &&
+      arabicLanguage[0]?.answer === 'Non'
     ) {
       dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français' || 'English';
+        return dcourse.language === 'Français' || 'English';
       });
     } else {
-      dcourses = dcourses.filter((dcourse, index) => {
-        return dcourse.language == 'Français';
+      dcourses = dcourses.filter((dcourse) => {
+        return dcourse.language === 'Français';
       });
     }
-
     //Filter1 filter result on the base of subdomains, bacserie,and wilaya eligibility
     let newDcourse = [];
-    dcourses.map((dcourse, index) => {
+    dcourses.map((dcourse) => {
       if (
         dcourse.sub_domains == domain.subdomain &&
         (dcourse.bacSerie.includes(user.Bac_Serie) ||
@@ -77,8 +94,7 @@ exports.create = async (req, res) => {
     //Filter1 End
 
     // Filter on the base of coast
-    // console.log('desc_answers_in_db', desc_answers_in_db[5]);
-    if (desc_answers_in_db[5]?.answer == 'Coût') {
+    if (criteria[0]?.answer == 'Coût') {
       newDcourse?.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
     }
 
