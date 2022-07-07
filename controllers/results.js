@@ -54,21 +54,21 @@ exports.create = async (req, res) => {
       englishLanguage[0]?.answer === 'Oui' &&
       arabicLanguage[0]?.answer === 'Oui'
     ) {
-      dcourses = dcourses.filter((dcourse, index) => {
+      dcourses = dcourses.filter((dcourse) => {
         return dcourse.language === 'Français' || 'English' || 'Arabe';
       });
     } else if (
       englishLanguage[0]?.answer === 'Non' &&
       arabicLanguage[0]?.answer === 'Oui'
     ) {
-      dcourses = dcourses.filter((dcourse, index) => {
+      dcourses = dcourses.filter((dcourse) => {
         return dcourse.language === 'Français' || 'Arabe';
       });
     } else if (
       englishLanguage[0]?.answer === 'Oui' &&
       arabicLanguage[0]?.answer === 'Non'
     ) {
-      dcourses = dcourses.filter((dcourse, index) => {
+      dcourses = dcourses.filter((dcourse) => {
         return dcourse.language === 'Français' || 'English';
       });
     } else {
@@ -80,7 +80,7 @@ exports.create = async (req, res) => {
     let newDcourse = [];
     dcourses.map((dcourse) => {
       if (
-        dcourse.sub_domains == domain.subdomain &&
+        dcourse.sub_domains === domain.subdomain &&
         (dcourse.bacSerie.includes(user.Bac_Serie) ||
           dcourse.bacSerie.includes('Toutes Séries de Baccalauréat')) &&
         (dcourse.WilayaofEligibility.includes(user.wilaya.code) ||
@@ -94,7 +94,7 @@ exports.create = async (req, res) => {
     //Filter1 End
 
     // Filter on the base of coast
-    if (criteria[0]?.answer == 'Coût') {
+    if (criteria[0]?.answer === 'Coût') {
       newDcourse?.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
     }
 
