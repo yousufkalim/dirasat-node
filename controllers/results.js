@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers }
     }).populate('question'); //Finding all discriminatory Answers In Db
-    console.log('user ', user);
+    console.log('user ', user.score);
     console.log('last_answer', answer);
     console.log('domain', domain);
     console.log('desc_answers_in_db', desc_answers_in_db);
@@ -42,9 +42,9 @@ exports.create = async (req, res) => {
         'Quel est le critère le plus important dans le choix de ta formation?'
       );
     });
-    console.log('englishLanguage', englishLanguage);
-    console.log('arabicLanguage', arabicLanguage);
-    console.log('criteria', criteria);
+    // console.log('englishLanguage', englishLanguage);
+    // console.log('arabicLanguage', arabicLanguage);
+    // console.log('criteria', criteria);
 
     let dcourses = await DCourses.find({});
     console.log('dcourses length', dcourses.length);
@@ -90,13 +90,24 @@ exports.create = async (req, res) => {
       }
     });
     console.log('lenghth selected courses to show', newDcourse.length);
+    // console.log(' selected courses to show', newDcourse);
 
     //Filter1 End
-
+    // console.log(' scriteria[0]?.answer', criteria[0]?.answer);
     // Filter on the base of coast
     if (criteria[0]?.answer === 'Coût') {
-      newDcourse?.sort((a, b) => parseInt(a.cost) - parseInt(b.cost));
+      console.log(' if ans is cost', newDcourse[0].cost);
+      newDcourse?.sort((a, b) => parseInt(b.cost) - parseInt(a.cost));
+    } else if (criteria[0]?.answer === 'Durée') {
+      newDcourse?.sort((a, b) => parseInt(b.duration) - parseInt(a.duration));
+    } else if (criteria[0]?.answer === 'Langue') {
+      newDcourse?.sort(
+        (a, b) => parseInt(b.languagestar) - parseInt(a.languagestar)
+      );
+    } else {
+      newDcourse?.sort((a, b) => parseInt(b.duration) - parseInt(a.duration));
     }
+    // console.log(' after coust at top courses to show', newDcourse);
 
     // make id of each course according to schema
     newDcourse = newDcourse.map((item) => ({

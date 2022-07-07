@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const dcourseSchema = new Schema(
   {
@@ -51,7 +51,7 @@ const dcourseSchema = new Schema(
       required: true
     },
     EligibilityAverage: {
-      type: String,
+      type: Number,
       required: true
     },
     wilaya: {
@@ -80,4 +80,4 @@ const dcourseSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model("DCourse", dcourseSchema);
+module.exports = model('DCourse', dcourseSchema);

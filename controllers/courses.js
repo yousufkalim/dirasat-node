@@ -91,11 +91,7 @@ exports.postAllDcourse = async (req, res) => {
       console.log('new arris', newRows[0]);
       const promises = newRows.map((item, index) => {
         let number = Math.floor(Math.random() * 20) + 1;
-        console.log(
-          'item with index',
-          item[1] ? true : 'changgggggggggggggg',
-          index
-        );
+
         const course = new DCourse({
           //Creating a new DCourse
           Establishment: item[0],
@@ -110,7 +106,7 @@ exports.postAllDcourse = async (req, res) => {
           bacSerie: item[10] || 'N/A',
           Guardianship: item[11],
           sector: item[12],
-          EligibilityAverage: number, //random number
+          EligibilityAverage: item[13] ? item[13] : 10, //random number
           wilaya: item[14],
           language: item[15] || 'N/A',
           languagestar: item[16] || 'N/A',
@@ -118,7 +114,7 @@ exports.postAllDcourse = async (req, res) => {
           duration: item[21],
           cost: item[22]
         });
-        // console.log("Dcourses are", course);
+        console.log('Dcourses are', course);
         return course.save();
       });
       await Promise.all(promises); //saving all courses at once
