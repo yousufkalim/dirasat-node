@@ -19,10 +19,10 @@ exports.create = async (req, res) => {
     const desc_answers_in_db = await Answers.find({
       _id: { $in: disc_answers }
     }).populate('question'); //Finding all discriminatory Answers In Db
-    console.log('user ', user.score);
-    console.log('last_answer', answer);
-    console.log('domain', domain);
-    console.log('desc_answers_in_db', desc_answers_in_db);
+    console.log('user ', user);
+    // console.log('last_answer', answer);
+    // console.log('domain', domain);
+    // console.log('desc_answers_in_db', desc_answers_in_db);
 
     let englishLanguage = desc_answers_in_db.filter((d) => {
       return (
@@ -90,13 +90,59 @@ exports.create = async (req, res) => {
       }
     });
     console.log('lenghth selected courses to show', newDcourse.length);
-    // console.log(' selected courses to show', newDcourse);
+
+    // filter on the base of curses
+    if (user?.lastDiploma) {
+      if (user.lastDiploma == 'Doctorat') {
+        newDcourse = newDcourse.filter((dcourse) => {
+          return (
+            dcourse.Curriculum == 'Doctorat (BAC+6)' ||
+            dcourse.Curriculum == 'Doctorat (BAC+7)' ||
+            dcourse.Curriculum == 'LMD (BAC+5)'
+          );
+        });
+      } else if (user.lastDiploma == 'Master') {
+        newDcourse = newDcourse.filter((dcourse) => {
+          return (
+            dcourse.Curriculum == 'École' ||
+            dcourse.Curriculum == 'Licence et master' ||
+            dcourse.Curriculum == 'LMD (BAC+5)' ||
+            dcourse.Curriculum == 'Master à cursus intégré de licence (BAC+5)'
+          );
+        });
+      } else if (user.lastDiploma == 'Licence') {
+        newDcourse = newDcourse.filter((dcourse) => {
+          return (
+            dcourse.Curriculum == 'Formation professionnalisante' ||
+            dcourse.Curriculum == 'Licence' ||
+            dcourse.Curriculum == 'Licence et Master' ||
+            dcourse.Curriculum == 'Licence professionnalisante (BAC+3)' ||
+            dcourse.Curriculum == 'LMD (BAC+5)' ||
+            dcourse.Curriculum == 'Master à cursus intégré de licence (BAC+5)'
+          );
+        });
+      } else {
+        newDcourse;
+      }
+    }
+    // filter on the base of elegibilty score
+    if (user?.score != 'score') {
+      console.log('here score algo run');
+      newDcourse = newDcourse.filter((dcourse) => {
+        return (
+          user?.score >= dcourse.EligibilityAverage ||
+          dcourse.EligibilityAverage == 10
+        );
+      });
+    }
+    console.log(
+      'lenghth selected after eligibilty or lastDiploma',
+      newDcourse.length
+    );
 
     //Filter1 End
-    // console.log(' scriteria[0]?.answer', criteria[0]?.answer);
     // Filter on the base of coast
     if (criteria[0]?.answer === 'Coût') {
-      console.log(' if ans is cost', newDcourse[0].cost);
       newDcourse?.sort((a, b) => parseInt(b.cost) - parseInt(a.cost));
     } else if (criteria[0]?.answer === 'Durée') {
       newDcourse?.sort((a, b) => parseInt(b.duration) - parseInt(a.duration));

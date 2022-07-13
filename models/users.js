@@ -73,6 +73,7 @@ const userSchema = new Schema(
     },
 
     otp: { type: String },
+    emailotp: { type: String },
     results: [
       {
         type: Schema.Types.ObjectId,
