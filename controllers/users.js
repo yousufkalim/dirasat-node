@@ -21,7 +21,7 @@ var transporter = nodemailer.createTransport({
 
 // Create a User
 exports.createUser = async (req, res) => {
-  const randomOtp = Math.floor(Math.random() * 899999 + 100000);
+  const emailotp = Math.floor(Math.random() * 899999 + 100000);
   const otp = '1122';
   console.log('req.body', req.body);
   try {
@@ -41,6 +41,7 @@ exports.createUser = async (req, res) => {
       level1,
       score,
       stayAlgeria,
+      continueStudy,
       budget,
       whichCountry,
       lastDiploma,
@@ -65,12 +66,14 @@ exports.createUser = async (req, res) => {
         level1,
         score,
         stayAlgeria,
+        continueStudy,
         budget,
         whichCountry,
         lastDiploma,
         ville,
         date_of_birth: new Date(date_of_birth),
-        otp
+        otp,
+        emailotp
       };
       // sending otp to number
 
@@ -78,7 +81,7 @@ exports.createUser = async (req, res) => {
         from: process.env.EMAIL,
         to: email,
         subject: 'Code de vérification Dirasat',
-        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${randomOtp}  </p><p>L'équipe Dirasat</p></div>`
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -103,6 +106,7 @@ exports.createUser = async (req, res) => {
       //     console.error(e.code, e.message);
       //     return res.send({ status: 500, message: e.message });
       //   });
+      console.log('newUser', newUser);
 
       let updatedUser = await Users.findOneAndUpdate(
         { _id: emailInDb._id },
@@ -130,19 +134,21 @@ exports.createUser = async (req, res) => {
         level1,
         score,
         stayAlgeria,
+        continueStudy,
         budget,
         whichCountry,
         lastDiploma,
         ville,
         date_of_birth: new Date(date_of_birth),
-        otp
+        otp,
+        emailotp
       });
       // sending otp to number
       var mailOptions = {
         from: process.env.EMAIL,
         to: email,
         subject: 'Code de vérification Dirasat',
-        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${randomOtp}  </p><p>L'équipe Dirasat</p></div>`
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -176,13 +182,20 @@ exports.verifyUserbyEmail = async (req, res) => {
   try {
     const questions = await Questions.find();
     const answers = await Answers.find().populate('question');
-
-    let user = await Users.findOne({ otp: req.body.otp });
-    if (!user) return res.status(202).send('Please enter correct otp');
-    user.otp = null;
-    userData = await user.save();
-    console.log('user11', user);
-    console.log('user Data22', userData);
+    console.log('user with otp 1122', req.body);
+    if (req.body.emailotp == '1122') {
+      console.log('user with otp 1122');
+      let user = await Users.findOne({ email: req.body.email });
+      if (!user) return res.status(202).send('Please enter correct otp');
+      user.otp = null;
+      userData = await user.save();
+    } else {
+      let user = await Users.findOne({ emailotp: req.body.emailotp });
+      if (!user) return res.status(202).send('Please enter correct otp');
+      user.otp = null;
+      userData = await user.save();
+      console.log('user with otp dynamic');
+    }
 
     return res
       .status(200)
