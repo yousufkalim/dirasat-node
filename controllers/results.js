@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
       _id: { $in: disc_answers }
     }).populate('question'); //Finding all discriminatory Answers In Db
     console.log('user ', user);
-    // console.log('last_answer', answer);
+    console.log('last_answer', answer);
     // console.log('domain', domain);
     // console.log('desc_answers_in_db', desc_answers_in_db);
 
@@ -100,7 +100,7 @@ exports.create = async (req, res) => {
     // filter on the base of curses
     if (user?.lastDiploma) {
       if (user.lastDiploma == 'Doctorat') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'Doctorat (BAC+6)' ||
             dcourse.Curriculum == 'Doctorat (BAC+7)' ||
@@ -108,7 +108,7 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Master') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'École' ||
             dcourse.Curriculum == 'Licence et master' ||
@@ -117,7 +117,8 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Licence') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
+          console.log('Licence will work', dcourse.Curriculum);
           return (
             dcourse.Curriculum == 'Formation professionnalisante' ||
             dcourse.Curriculum == 'Licence' ||
