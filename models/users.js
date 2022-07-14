@@ -44,7 +44,8 @@ const userSchema = new Schema(
       type: String
     },
     accept_condition: {
-      type: String
+      type: Boolean,
+      defauult: false
     },
     level1: {
       type: String
@@ -63,7 +64,12 @@ const userSchema = new Schema(
     },
 
     stayAlgeria: {
-      type: String
+      type: Boolean,
+      defauult: false
+    },
+    continueStudy: {
+      type: Boolean,
+      defauult: false
     },
     budget: {
       type: String

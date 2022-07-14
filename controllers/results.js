@@ -24,6 +24,12 @@ exports.create = async (req, res) => {
     // console.log('domain', domain);
     // console.log('desc_answers_in_db', desc_answers_in_db);
 
+    let planQuestion = desc_answers_in_db.filter((d) => {
+      return (
+        d?.question?.question ===
+        "Dernière question, étudier à l'étranger est pour toi:"
+      );
+    });
     let englishLanguage = desc_answers_in_db.filter((d) => {
       return (
         d?.question?.question ===
@@ -191,7 +197,8 @@ exports.create = async (req, res) => {
       example_of_job: answer.job.example_of_job,
       type_of_job: answer.job.type_of_job,
       domain: domain.name,
-      data: resultForResponse.dcourses
+      data: resultForResponse.dcourses,
+      planQuestion
     };
     // console.log("end result issss", newResult.data);
 
