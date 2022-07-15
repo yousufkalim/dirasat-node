@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
       _id: { $in: disc_answers }
     }).populate('question'); //Finding all discriminatory Answers In Db
     console.log('user ', user);
-    // console.log('last_answer', answer);
+    console.log('last_answer', answer);
     // console.log('domain', domain);
     // console.log('desc_answers_in_db', desc_answers_in_db);
 
@@ -48,9 +48,6 @@ exports.create = async (req, res) => {
         'Quel est le critère le plus important dans le choix de ta formation?'
       );
     });
-    // console.log('englishLanguage', englishLanguage);
-    // console.log('arabicLanguage', arabicLanguage);
-    // console.log('criteria', criteria);
 
     let dcourses = await DCourses.find({});
     console.log('dcourses length', dcourses.length);
@@ -60,28 +57,35 @@ exports.create = async (req, res) => {
       englishLanguage[0]?.answer === 'Oui' &&
       arabicLanguage[0]?.answer === 'Oui'
     ) {
-      dcourses = dcourses.filter((dcourse) => {
-        return dcourse.language === 'Français' || 'English' || 'Arabe';
+      dcourses = dcourses.filter((dcourse, i) => {
+        return (
+          dcourse.language === 'Français' ||
+          dcourse.language === 'English' ||
+          dcourse.language === 'Arabe'
+        );
       });
     } else if (
       englishLanguage[0]?.answer === 'Non' &&
       arabicLanguage[0]?.answer === 'Oui'
     ) {
       dcourses = dcourses.filter((dcourse) => {
-        return dcourse.language === 'Français' || 'Arabe';
+        return dcourse.language === 'Français' || dcourse.language === 'Arabe';
       });
     } else if (
       englishLanguage[0]?.answer === 'Oui' &&
       arabicLanguage[0]?.answer === 'Non'
     ) {
       dcourses = dcourses.filter((dcourse) => {
-        return dcourse.language === 'Français' || 'English';
+        return (
+          dcourse.language === 'Français' || dcourse.language === 'English'
+        );
       });
     } else {
       dcourses = dcourses.filter((dcourse) => {
         return dcourse.language === 'Français';
       });
     }
+    console.log('dcourses length after language filter', dcourses.length);
     //Filter1 filter result on the base of subdomains, bacserie,and wilaya eligibility
     let newDcourse = [];
     dcourses.map((dcourse) => {
@@ -100,7 +104,7 @@ exports.create = async (req, res) => {
     // filter on the base of curses
     if (user?.lastDiploma) {
       if (user.lastDiploma == 'Doctorat') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'Doctorat (BAC+6)' ||
             dcourse.Curriculum == 'Doctorat (BAC+7)' ||
@@ -108,7 +112,7 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Master') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'École' ||
             dcourse.Curriculum == 'Licence et master' ||
@@ -117,7 +121,7 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Licence') {
-        newDcourse = newDcourse.filter((dcourse) => {
+        newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'Formation professionnalisante' ||
             dcourse.Curriculum == 'Licence' ||
@@ -133,7 +137,6 @@ exports.create = async (req, res) => {
     }
     // filter on the base of elegibilty score
     if (user?.score != 'score') {
-      console.log('here score algo run');
       newDcourse = newDcourse.filter((dcourse) => {
         return (
           user?.score >= dcourse.EligibilityAverage ||
@@ -141,10 +144,7 @@ exports.create = async (req, res) => {
         );
       });
     }
-    console.log(
-      'lenghth selected after eligibilty or lastDiploma',
-      newDcourse.length
-    );
+    console.log('lenghth after eligibilty or lastDiploma', newDcourse.length);
 
     //Filter1 End
     // Filter on the base of coast
@@ -159,7 +159,6 @@ exports.create = async (req, res) => {
     } else {
       newDcourse?.sort((a, b) => parseInt(b.duration) - parseInt(a.duration));
     }
-    // console.log(' after coust at top courses to show', newDcourse);
 
     // make id of each course according to schema
     newDcourse = newDcourse.map((item) => ({
