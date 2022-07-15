@@ -104,7 +104,7 @@ exports.create = async (req, res) => {
     // filter on the base of curses
     if (user?.lastDiploma) {
       if (user.lastDiploma == 'Doctorat') {
-        newDcourse.filter((dcourse) => {
+        newDcourse = newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'Doctorat (BAC+6)' ||
             dcourse.Curriculum == 'Doctorat (BAC+7)' ||
@@ -112,7 +112,7 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Master') {
-        newDcourse.filter((dcourse) => {
+        newDcourse = newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'École' ||
             dcourse.Curriculum == 'Licence et master' ||
@@ -121,7 +121,7 @@ exports.create = async (req, res) => {
           );
         });
       } else if (user.lastDiploma == 'Licence') {
-        newDcourse.filter((dcourse) => {
+        newDcourse = newDcourse.filter((dcourse) => {
           return (
             dcourse.Curriculum == 'Formation professionnalisante' ||
             dcourse.Curriculum == 'Licence' ||
