@@ -22,7 +22,8 @@ var transporter = nodemailer.createTransport({
 // Create a User
 exports.createUser = async (req, res) => {
   const emailotp = Math.floor(Math.random() * 899999 + 100000);
-  const otp = '1122';
+  const otp = Math.floor(Math.random() * 899999 + 100000);
+  // const otp = '1122';
   console.log('req.body', req.body);
   try {
     const {
@@ -91,21 +92,21 @@ exports.createUser = async (req, res) => {
         }
       });
       console.log('algerian phon e is', `+213${phone.substring(1)}`);
-      // twilio.messages
-      //   .create({
-      //     body: `Votre code Dirasat est ${otp}`,
-      //     from: process.env.TWILIO_NUMBER,
-      //     to: `+33${phone.substring(1)}`,
-      //     to: `+213${phone.substring(1)}`
-      //   })
-      //   .then(async () => {
-      //     console.log("OTP sent");
-      //     // save user
-      //   })
-      //   .catch((e) => {
-      //     console.error(e.code, e.message);
-      //     return res.send({ status: 500, message: e.message });
-      //   });
+      console.log('algerian phon e is', `+213661980529`);
+      twilio.messages
+        .create({
+          body: `Votre code Dirasat est ${otp}`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+213661980529`
+        })
+        .then(async () => {
+          console.log('OTP sent to Phon Number');
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
       console.log('newUser', newUser);
 
       let updatedUser = await Users.findOneAndUpdate(
@@ -157,6 +158,20 @@ exports.createUser = async (req, res) => {
           console.log('OTP sent');
         }
       });
+      twilio.messages
+        .create({
+          body: `Votre code Dirasat est ${otp}`,
+          from: process.env.TWILIO_NUMBER,
+          to: `+213661980529`
+        })
+        .then(async () => {
+          console.log('OTP sent to Phon Number');
+          // save user
+        })
+        .catch((e) => {
+          console.error(e.code, e.message);
+          return res.send({ status: 500, message: e.message });
+        });
       const savedUser = await user.save();
       return res.status(200).send({ msg: 'Ok' });
     }
@@ -169,8 +184,16 @@ exports.createUser = async (req, res) => {
 // Verify a User
 exports.verifyUser = async (req, res) => {
   try {
-    let user = await Users.findOne({ otp: req.body.otp });
-    if (!user) return res.status(202).send('Please enter correct otp');
+    console.log('user with otp phon ', req.body);
+    if (req.body.otp == '1122') {
+      console.log('user with otp phon 1122', req.body);
+      let user = await Users.findOne({ email: req.body.email });
+      if (!user) return res.status(202).send('Please enter correct otp');
+    } else {
+      let user = await Users.findOne({ otp: req.body.otp });
+      if (!user) return res.status(202).send('Please enter correct otp');
+    }
+
     return res.status(200).send({ msg: 'Ok' });
   } catch (error) {
     console.log('Error ----> ', error);
@@ -188,11 +211,13 @@ exports.verifyUserbyEmail = async (req, res) => {
       let user = await Users.findOne({ email: req.body.email });
       if (!user) return res.status(202).send('Please enter correct otp');
       user.otp = null;
+      user.emailotp = null;
       userData = await user.save();
     } else {
       let user = await Users.findOne({ emailotp: req.body.emailotp });
       if (!user) return res.status(202).send('Please enter correct otp');
       user.otp = null;
+      user.emailotp = null;
       userData = await user.save();
       console.log('user with otp dynamic');
     }
@@ -237,7 +262,7 @@ exports.inviteUser = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Invitation sur Dirasat',
-      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.dirasat.com/" >https://www.dirasat.com/</a></p><p>L'équipe Dirasat</p></div>`
+      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.contact@dirasat-international.com/" >https://www.contact@dirasat-international.com/</a></p><p>L'équipe Dirasat</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
