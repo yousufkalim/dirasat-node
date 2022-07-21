@@ -262,7 +262,7 @@ exports.inviteUser = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Invitation sur Dirasat',
-      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://www.contact@dirasat-international.com/" >https://www.contact@dirasat-international.com/</a></p><p>L'équipe Dirasat</p></div>`
+      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://dirasat-international.com/" >https://dirasat-international.com/</a></p><p>L'équipe Dirasat</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
