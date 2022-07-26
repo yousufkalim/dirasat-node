@@ -97,7 +97,7 @@ exports.createUser = async (req, res) => {
         .create({
           body: `Votre code Dirasat est ${otp}`,
           from: process.env.TWILIO_NUMBER,
-          to: `+213661980529`
+          to: `+213${phone.substring(1)}`
         })
         .then(async () => {
           console.log('OTP sent to Phon Number');
@@ -162,7 +162,7 @@ exports.createUser = async (req, res) => {
         .create({
           body: `Votre code Dirasat est ${otp}`,
           from: process.env.TWILIO_NUMBER,
-          to: `+213661980529`
+          to: `+213${phone.substring(1)}`
         })
         .then(async () => {
           console.log('OTP sent to Phon Number');
