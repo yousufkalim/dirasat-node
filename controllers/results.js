@@ -176,6 +176,7 @@ exports.create = async (req, res) => {
       dcourses: newDcourse
     });
     const savedResult = await result.save();
+    console.log('savedResult22', savedResult);
 
     // Saving result to user Schema in DB
     await Users.findByIdAndUpdate(
@@ -187,7 +188,7 @@ exports.create = async (req, res) => {
       },
       { new: true }
     );
-    // console.log("savedResult22", savedResult);
+
     const resultForResponse = await Results.findById(savedResult._id).populate(
       'dcourses.dcourseId'
     );
