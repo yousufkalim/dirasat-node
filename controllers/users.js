@@ -91,7 +91,6 @@ exports.createUser = async (req, res) => {
         }
       });
       console.log('algerian phon e is', `+213${phone.substring(1)}`);
-      console.log('algerian phon e is', `+213661980529`);
       twilio.messages
         .create({
           body: `Votre code Dirasat est ${otp}`,
