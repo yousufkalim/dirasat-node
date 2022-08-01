@@ -9,10 +9,9 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilio = require('twilio')(accountSid, authToken);
 
 var transporter = nodemailer.createTransport({
-  // host: "smtp-relay.gmail.com",
+  host: 'smtp.ionos.fr',
   port: 465,
   secure: true,
-  service: 'Gmail',
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD
