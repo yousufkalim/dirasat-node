@@ -30,6 +30,7 @@ exports.create = async (req, res) => {
         "Dernière question, étudier à l'étranger est pour toi:"
       );
     });
+
     let englishLanguage = desc_answers_in_db.filter((d) => {
       return (
         d?.question?.question ===
@@ -144,8 +145,6 @@ exports.create = async (req, res) => {
         );
       });
     }
-    console.log('lenghth after eligibilty or lastDiploma', newDcourse.length);
-
     //Filter1 End
     // Filter on the base of coast
     if (criteria[0]?.answer === 'Coût') {
@@ -176,7 +175,6 @@ exports.create = async (req, res) => {
       dcourses: newDcourse
     });
     const savedResult = await result.save();
-    console.log('savedResult22', savedResult);
 
     // Saving result to user Schema in DB
     await Users.findByIdAndUpdate(
