@@ -14,8 +14,8 @@ var transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
+    pass: process.env.PASSWORD
+  }
 });
 
 // Create a User
@@ -45,7 +45,7 @@ exports.createUser = async (req, res) => {
       budget,
       whichCountry,
       lastDiploma,
-      ville,
+      ville
     } = req.body;
 
     const emailInDb = await Users.findOne({ email });
@@ -73,7 +73,7 @@ exports.createUser = async (req, res) => {
         ville,
         date_of_birth: new Date(date_of_birth),
         otp,
-        emailotp,
+        emailotp
       };
       // sending otp to number
 
@@ -81,7 +81,7 @@ exports.createUser = async (req, res) => {
         from: process.env.EMAIL,
         to: email,
         subject: 'Code de vérification Dirasat',
-        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`,
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -111,10 +111,10 @@ exports.createUser = async (req, res) => {
       let updatedUser = await Users.findOneAndUpdate(
         { _id: emailInDb._id },
         {
-          $set: newUser,
+          $set: newUser
         },
         {
-          new: true,
+          new: true
         }
       );
       return res.json({ status: 200, message: 'ok' });
@@ -141,14 +141,14 @@ exports.createUser = async (req, res) => {
         ville,
         date_of_birth: new Date(date_of_birth),
         otp,
-        emailotp,
+        emailotp
       });
       // sending otp to number
       var mailOptions = {
         from: process.env.EMAIL,
         to: email,
         subject: 'Code de vérification Dirasat',
-        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`,
+        html: `<div><h4> Bonjour,</h4><p>Voici le code de vérification pour accéder à ton questionnaire d’orientation Dirasat :${emailotp}  </p><p>L'équipe Dirasat</p></div>`
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -221,7 +221,9 @@ exports.verifyUserbyEmail = async (req, res) => {
       console.log('user with otp dynamic');
     }
 
-    return res.status(200).send({ msg: 'Ok', questions, answers, user: userData });
+    return res
+      .status(200)
+      .send({ msg: 'Ok', questions, answers, user: userData });
   } catch (error) {
     console.log('Error ----> ', error);
     res.status(500).send('Something Failed');
@@ -233,15 +235,15 @@ exports.updateUser = async (req, res) => {
   try {
     const { id, email, advice, contact, phone } = req.body;
     let newUser = {
-      phone,
+      phone
     };
     let updatedUser = await Users.findOneAndUpdate(
       { _id: id },
       {
-        $set: newUser,
+        $set: newUser
       },
       {
-        new: true,
+        new: true
       }
     );
     return res.status(200).send({ msg: 'Ok' });
@@ -259,7 +261,7 @@ exports.inviteUser = async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Invitation sur Dirasat',
-      html: `<div><h4> Bonjour,</h4><p>${firstName} ${lastName}   t'invite sur la plateforme Dirasat pour t'aider à choisir ton parcours supérieur.</p><p>Rejoins-nous sur <a href="https://dirasat-international.com/" >https://dirasat-international.com/</a></p><p>L'équipe Dirasat</p></div>`,
+      html: `<div><h4> Salut!,</h4><p>X t’invite à ton tour à faire le test Dirasat pour trouver ton projet d’études en Algérie ou à l’international. Sans plus attendre, rends toi sur <a href="https://dirasat-international.com/" >https://dirasat-international.com/</a></p><p>L'équipe Dirasat</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
@@ -282,13 +284,13 @@ exports.contactUs = async (req, res) => {
       name,
       email,
       message,
-      description,
+      description
     });
     var mailOptions = {
       from: email,
       to: process.env.EMAIL,
       subject: 'Nouveau contact Dirasat',
-      html: `<div><h4> </h4><p>Prénom et nom : ${name}</p><p>Email: ${email}</p><p>Message : ${message}</p><p>Votre Message : ${description}</p></div>`,
+      html: `<div><h4> </h4><p>Prénom et nom : ${name}</p><p>Email: ${email}</p><p>Message : ${message}</p><p>Votre Message : ${description}</p></div>`
     };
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
