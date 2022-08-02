@@ -30,7 +30,12 @@ exports.create = async (req, res) => {
         "Dernière question, étudier à l'étranger est pour toi:"
       );
     });
-
+    let paidQuestion = desc_answers_in_db.filter((d) => {
+      return (
+        d?.question?.question ===
+        'Encore une question, veux-tu inclure les études payantes?'
+      );
+    });
     let englishLanguage = desc_answers_in_db.filter((d) => {
       return (
         d?.question?.question ===
@@ -145,6 +150,13 @@ exports.create = async (req, res) => {
         );
       });
     }
+    // remove three star cost courses if no paid trainig
+    if (paidQuestion[0]?.answer != 'Oui') {
+      newDcourse = newDcourse.filter((dcourse) => {
+        return dcourse?.cost != '3';
+      });
+    }
+
     //Filter1 End
     // Filter on the base of coast
     if (criteria[0]?.answer === 'Coût') {
